@@ -1,0 +1,46 @@
+---
+
+- name: Homelab Configurations
+  hosts: homelab
+  remote_user: root
+  # Como estamos usando root no es necesario lo siguiente      8P
+  # become: yes
+  # become_method: sudo
+  roles:
+    - homelab
+
+- name: Common Tasks
+  hosts: all
+  remote_user: root
+  # Como estamos usando root no es necesario lo siguiente      8P
+  # become: yes
+  # become_method: sudo
+  roles:
+    - common
+
+- name: Instalando LAMP (Linux + Apache + MariaDB + Php)
+  hosts: lamp
+  remote_user: root
+  # Como estamos usando root no es necesario lo siguiente      8P
+  # become: yes
+  # become_method: sudo
+  roles:
+    - lamp
+
+- name: Instalando LLMP (Linux + Lighttpd + MariaDB + Php)
+  hosts: llmp
+  remote_user: root
+  # Como estamos usando root no es necesario lo siguiente      8P
+  # become: yes
+  # become_method: sudo
+  roles:
+    - llmp
+
+- name: Instalando LNMP (Linux + Nginx + MariaDB + Php)
+  hosts: lnmp
+  remote_user: root
+  # Como estamos usando root no es necesario lo siguiente      8P
+  # become: yes
+  # become_method: sudo
+  roles:
+    - lnmp

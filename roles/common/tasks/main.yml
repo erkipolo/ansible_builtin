@@ -1,0 +1,13 @@
+---
+- name: Copy template of sources.list config file
+  ansible.builtin.template:
+    src: sources.list.j2
+    dest: /etc/apt/sources.list
+
+- name: update repository index
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: upgrade the system
+  ansible.builtin.apt:
+    upgrade: yes

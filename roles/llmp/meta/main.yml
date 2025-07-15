@@ -1,0 +1,4 @@
+---
+dependencies:
+  - role: php2lighttpd
+  - role: php2mariadb

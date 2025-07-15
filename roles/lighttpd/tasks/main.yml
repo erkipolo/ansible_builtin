@@ -1,0 +1,12 @@
+---
+- name: Install Lighttpd
+  ansible.builtin.apt:
+    name:
+      - lighttpd
+    state: present
+
+- name: Arrancamos y Habilitamos en el arranque Lighttpd
+  ansible.builtin.service:
+    name: lighttpd
+    state: started
+    enabled: yes

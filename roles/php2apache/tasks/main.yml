@@ -1,0 +1,51 @@
+---
+- name: install suporte de php para apache
+  ansible.builtin.apt:
+    name:
+      - libapache2-mod-php
+      - php-fpm
+      - php
+    state: present
+  
+- name: Habilitamos la config de PROXY de PHP para Apache
+  ansible.builtin.file:
+    src: /etc/apache2/mods-available/proxy.conf
+    dest: /etc/apache2/mods-enabled/proxy.conf
+    state: link
+
+- name: Habilitamos el modulo de PROXY de PHP para Apache
+  ansible.builtin.file:
+    src: /etc/apache2/mods-available/proxy.load
+    dest: /etc/apache2/mods-enabled/proxy.load
+    state: link
+
+- name: Habilitamos la config de setenvif de PHP para Apache
+  ansible.builtin.file:
+    src: /etc/apache2/mods-available/setenvif.conf
+    dest: /etc/apache2/mods-enabled/setenvif.conf
+    state: link
+
+- name: Habilitamos el modulo de setenvif de PHP para Apache
+  ansible.builtin.file:
+    src: /etc/apache2/mods-available/setenvif.load
+    dest: /etc/apache2/mods-enabled/setenvif.load
+    state: link
+
+- name: Habilitamos el modulo de PROXY-FCGI de PHP para Apache
+  ansible.builtin.file:
+    src: /etc/apache2/mods-available/proxy_fcgi.load
+    dest: /etc/apache2/mods-enabled/proxy_fcgi.load
+    state: link
+
+- name: Habilitamos la config de PHP para Apache
+  ansible.builtin.file:
+    src: /etc/apache2/conf-available/php8.2-fpm.conf
+    dest: /etc/apache2/conf-enabled/php8.2-fpm.conf
+    state: link
+
+- name: Copy template of phpinfo.php file
+  ansible.builtin.template:
+    src: phpinfo.php.j2
+    dest: /var/www/html/phpinfo.php
+
+  notify: restart_apache
