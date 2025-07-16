@@ -1,0 +1,23 @@
+#- name: Download WordPress
+#  ansible.builtin.get_url:
+#    url: "http://wordpress.org/wordpress-6.8.2.tar.gz"
+#    url: "http://192.168.56.1/extras/wordpress-6.8.2.tar.gz"
+#    dest: /srv/wordpress-6.8.2.tar.gz
+
+- name: Descomprimir wordpress
+  ansible.builtin.unarchive:
+    src: wordpress-6.8.2.tar.gz
+    dest: /var/www/html
+
+- name: Creando la base de datos para wordpress
+  ansible.builtin.mysql_db:
+    name: "wordpress"
+    state: present
+
+- name: Creando el usuario de wordpress para la base de datos
+  ansible.builtin.mysql_user:
+    name: "wordpress"
+    password: 'wordpress'
+    priv: "wordpress.*:ALL"
+    host: 'localhost'
+    state: present

@@ -18,7 +18,7 @@
   roles:
     - common
 
-- name: Instalando LAMP (Linux + Apache + MariaDB + Php)
+- name: Instalando Wordpress (Apache + MariaDB + Php)
   hosts: lamp
   remote_user: root
   # Como estamos usando root no es necesario lo siguiente      8P
@@ -26,8 +26,9 @@
   # become_method: sudo
   roles:
     - lamp
+    - wordpress
 
-- name: Instalando LLMP (Linux + Lighttpd + MariaDB + Php)
+- name: Instalando Wordpress (Lighttpd + MariaDB + Php)
   hosts: llmp
   remote_user: root
   # Como estamos usando root no es necesario lo siguiente      8P
@@ -35,8 +36,9 @@
   # become_method: sudo
   roles:
     - llmp
+    - wordpress
 
-- name: Instalando LNMP (Linux + Nginx + MariaDB + Php)
+- name: Instalando Wordpress (Nginx + MariaDB + Php)
   hosts: lnmp
   remote_user: root
   # Como estamos usando root no es necesario lo siguiente      8P
@@ -44,3 +46,4 @@
   # become_method: sudo
   roles:
     - lnmp
+    - wordpress
