@@ -1,3 +1,5 @@
 ---
 dependencies:
-  - role: php2mariadb
+  - role: php-nginx
+  - role: php-info
+  - role: php-mariadb

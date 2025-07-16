@@ -1,4 +1,5 @@
 ---
 dependencies:
-  - role: php2apache
-  - role: php2mariadb
+  - role: php-apache
+  - role: php-info
+  - role: php-mariadb

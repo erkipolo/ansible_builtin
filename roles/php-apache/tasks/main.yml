@@ -1,10 +1,8 @@
 ---
-- name: install suporte de php para apache
+- name: install soporte de php-fpm para apache
   ansible.builtin.apt:
     name:
       - libapache2-mod-php
-      - php-fpm
-      - php
     state: present
   
 - name: Habilitamos la config de PROXY de PHP para Apache
@@ -42,10 +40,5 @@
     src: /etc/apache2/conf-available/php8.2-fpm.conf
     dest: /etc/apache2/conf-enabled/php8.2-fpm.conf
     state: link
-
-- name: Copy template of phpinfo.php file
-  ansible.builtin.template:
-    src: phpinfo.php.j2
-    dest: /var/www/html/phpinfo.php
 
   notify: restart_apache

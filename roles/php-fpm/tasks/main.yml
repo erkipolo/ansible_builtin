@@ -1,0 +1,8 @@
+---
+- name: install php-fpm
+  ansible.builtin.apt:
+    name:
+      - php-fpm
+      - php
+    state: present
+  

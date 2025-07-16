@@ -1,12 +1,12 @@
 ---
-- name: install apache
+- name: install nginx
   ansible.builtin.apt:
     name:
-      - apache2
+      - nginx
     state: present
 
-- name: Arrancamos y Habilitamos en el arranque Apache
+- name: Arrancamos y Habilitamos en el arranque nginx
   ansible.builtin.service:
-    name: apache2
+    name: nginx
     state: started
     enabled: yes

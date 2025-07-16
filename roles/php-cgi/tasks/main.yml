@@ -1,0 +1,8 @@
+---
+- name: install php-cgi
+  ansible.builtin.apt:
+    name:
+      - php-cgi
+      - php
+    state: present
+  
