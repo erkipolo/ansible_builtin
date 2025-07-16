@@ -26,6 +26,7 @@
   # become_method: sudo
   roles:
     - lamp
+#    - php-info
     - wordpress
 
 - name: Instalando Wordpress (Lighttpd + MariaDB + Php)
@@ -36,6 +37,7 @@
   # become_method: sudo
   roles:
     - llmp
+#    - php-info
     - wordpress
 
 - name: Instalando Wordpress (Nginx + MariaDB + Php)
@@ -46,4 +48,5 @@
   # become_method: sudo
   roles:
     - lnmp
+#    - php-info
     - wordpress

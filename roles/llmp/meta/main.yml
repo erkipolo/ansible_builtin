@@ -1,5 +1,4 @@
 ---
 dependencies:
   - role: php-lighttpd
-  - role: php-info
   - role: php-mariadb
