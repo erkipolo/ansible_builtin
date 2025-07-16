@@ -1,5 +1,6 @@
 - name: restart_lighttpd
-  ansible.builtin.service:
-    name: lighttpd
+  ansible.builtin.systemd_service:
     state: restarted
-    enabled: yes
+    name: lighttpd
+    enabled: true
+    masked: no
