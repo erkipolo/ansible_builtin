@@ -1,5 +1,13 @@
 ---
-- name: Copy template of default file site with php support
+- name: Create directory para la configuracion php del sitio
+  ansible.builtin.file:
+    path: /etc/nginx/sites-available/php/
+    state: directory
+    mode: '0755'
+
+- name: Configuramos el site with php support
   ansible.builtin.template:
-    src: default.j2
-    dest: /etc/nginx/sites-available/default
+    src: php_default.j2
+    dest: /etc/nginx/sites-available/php/php_default
+
+  notify: restart_nginx

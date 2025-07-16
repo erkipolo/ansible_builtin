@@ -1,5 +1,12 @@
+#- name: restart_nginx
+#  ansible.builtin.service:
+#    name: nginx
+#    state: restarted
+#    enabled: yes
+
 - name: restart_nginx
-  ansible.builtin.service:
-    name: nginx
+  ansible.builtin.systemd_service:
     state: restarted
-    enabled: yes
+    name: nginx
+    enabled: true
+    masked: no

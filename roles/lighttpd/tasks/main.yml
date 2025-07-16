@@ -5,12 +5,6 @@
       - lighttpd
     state: present
 
-- name: Instalamos los certificados de ejemplo
-  ansible.builtin.apt:
-    name:
-      - ssl-cert
-    state: present
-
 - name: Habilitamos el modulo de SSL
   ansible.builtin.file:
     src: /etc/lighttpd/conf-available/10-ssl.conf

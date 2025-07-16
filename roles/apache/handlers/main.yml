@@ -1,5 +1,12 @@
+#- name: restart_apache
+#  ansible.builtin.service:
+#    name: apache2
+#    state: restarted
+#    enabled: yes
+#
 - name: restart_apache
-  ansible.builtin.service:
-    name: apache2
+  ansible.builtin.systemd_service:
     state: restarted
-    enabled: yes
+    name: apache2
+    enabled: true
+    masked: no

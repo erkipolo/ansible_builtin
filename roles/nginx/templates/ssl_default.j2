@@ -1,0 +1,13 @@
+server {
+  listen 443 ssl default_server;
+  listen [::]:443 ssl default_server;
+  ssl_certificate /etc/ssl/certs/ssl-cert-snakeoil.pem;
+  ssl_certificate_key /etc/ssl/private/ssl-cert-snakeoil.key;
+  root /var/www/html;
+  index index.html index.htm index.nginx-debian.html;
+  server_name _;
+  location / {
+    try_files $uri $uri/ =404;
+  }
+  include /etc/nginx/sites-available/php/*;
+}

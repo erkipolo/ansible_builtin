@@ -16,12 +16,6 @@
     dest: /etc/apache2/mods-enabled/rewrite.load
     state: link
 
-- name: Instalamos los certificados de ejemplo
-  ansible.builtin.apt:
-    name:
-      - ssl-cert
-    state: present
-
 - name: Habilitamos el modulo socache_shmcb como dependencia de SSL
   ansible.builtin.file:
     src: /etc/apache2/mods-available/socache_shmcb.load
