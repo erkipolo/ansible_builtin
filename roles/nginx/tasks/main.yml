@@ -1,0 +1,24 @@
+---
+- name: install nginx
+  ansible.builtin.apt:
+    name:
+      - nginx
+    state: present
+
+- name: Forzamos la redireccion a HTTPS
+  ansible.builtin.template:
+    src: default.j2
+    dest: /etc/nginx/sites-available/default
+
+- name: Configuramos el HTTPS
+  ansible.builtin.template:
+    src: ssl_default.j2
+    dest: /etc/nginx/sites-available/ssl_default
+
+- name: Habilitamos el HTTPS
+  ansible.builtin.file:
+    src: /etc/nginx/sites-available/ssl_default
+    dest: /etc/nginx/sites-enabled/ssl_default
+    state: link
+
+  notify: restart_nginx

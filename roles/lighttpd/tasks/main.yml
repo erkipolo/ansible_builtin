@@ -1,0 +1,24 @@
+---
+- name: Install Lighttpd
+  ansible.builtin.apt:
+    name:
+      - lighttpd
+    state: present
+
+- name: Habilitamos el modulo de SSL
+  ansible.builtin.file:
+    src: /etc/lighttpd/conf-available/10-ssl.conf
+    dest: /etc/lighttpd/conf-enabled/10-ssl.conf
+    state: link
+
+- name: Copiamos un certificado por defecto
+  ansible.builtin.template:
+    src: ssl-cert-snakeoil.pem.j2
+    dest: /etc/lighttpd/server.pem
+
+- name: Forzamos la redireccion HTTPS
+  ansible.builtin.template:
+    src: lighttpd.conf.j2
+    dest: /etc/lighttpd/lighttpd.conf
+
+  notify: restart_lighttpd

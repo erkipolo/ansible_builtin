@@ -1,0 +1,5 @@
+---
+- name: Copy template of phpinfo.php file
+  ansible.builtin.template:
+    src: phpinfo.php.j2
+    dest: /var/www/html/info.php

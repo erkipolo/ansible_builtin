@@ -1,0 +1,49 @@
+---
+
+- name: Homelab Configurations
+  hosts: homelab
+  remote_user: root
+  # Como estamos usando root no es necesario lo siguiente      8P
+  # become: yes
+  # become_method: sudo
+  roles:
+    - homelab
+
+- name: Common Tasks
+  hosts: all
+  remote_user: root
+  # Como estamos usando root no es necesario lo siguiente      8P
+  # become: yes
+  # become_method: sudo
+  roles:
+    - common
+
+- name: Instalando Wordpress (Apache + MariaDB + Php)
+  hosts: lamp
+  remote_user: root
+  # Como estamos usando root no es necesario lo siguiente      8P
+  # become: yes
+  # become_method: sudo
+  roles:
+    - lamp
+    - wordpress
+
+- name: Instalando Wordpress (Lighttpd + MariaDB + Php)
+  hosts: llmp
+  remote_user: root
+  # Como estamos usando root no es necesario lo siguiente      8P
+  # become: yes
+  # become_method: sudo
+  roles:
+    - llmp
+    - wordpress
+
+- name: Instalando Wordpress (Nginx + MariaDB + Php)
+  hosts: lnmp
+  remote_user: root
+  # Como estamos usando root no es necesario lo siguiente      8P
+  # become: yes
+  # become_method: sudo
+  roles:
+    - lnmp
+    - wordpress

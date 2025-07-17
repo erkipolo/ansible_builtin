@@ -1,0 +1,4 @@
+---
+dependencies:
+  - role: php-apache
+  - role: php-mariadb

@@ -1,0 +1,77 @@
+---
+
+- name: install PHP wordpress dependencies
+  ansible.builtin.apt:
+    name:
+      - php-cli
+      - php-common
+      - php-imap
+      - php-redis
+      - php-snmp
+      - php-xml
+      - php-zip
+      - php-mbstring
+      - php-curl
+    state: present
+
+#
+#   Estamos usando /var/www/html/
+#
+#- name: Create directory for site
+#  ansible.builtin.file:
+#    path: /var/www/mydomain.com
+#    state: directory
+#    owner: www-data
+#    group: www-data
+#    mode: '0755'
+
+- name: Chequea si wordpress esta descargado o no
+  ansible.builtin.stat:
+    path: /var/www/html/wp-settings.php
+  register: file_check
+
+- name: si no esta descargado, descargamos Wordpress 6.8.2
+  ansible.builtin.get_url:
+    url: "http://wordpress.org/wordpress-6.8.2.tar.gz"
+    dest: /tmp/
+  when: file_check.stat.exists == false
+
+- name: si no esta descargado, extraemos el comprimido de Wordpress 6.8.2
+  ansible.builtin.unarchive:
+    src: /tmp/wordpress-6.8.2.tar.gz
+    dest: /tmp/
+    remote_src: yes
+  when: file_check.stat.exists == false
+
+- name: si no esta descargado, movemos los archivos extraidos a la carpeta de publicacion
+  ansible.builtin.copy:
+    src: /tmp/wordpress/
+    dest: /var/www/html/
+    remote_src: true
+    owner: www-data
+    group: www-data
+  when: file_check.stat.exists == false
+
+- name: Borramos los archivos y carpetas no utilizados
+  ansible.builtin.file:
+      path: "{{ item }}"
+      state: absent
+  loop:
+     - /tmp/wordpress-6.8.2.tar.gz
+     - /tmp/wordpress
+     - /var/www/html/index.html
+     - /var/www/html/index.lighttpd.html
+     - /var/www/html/index.nginx-debian.html
+
+- name: Creando la base de datos para wordpress
+  ansible.builtin.mysql_db:
+    name: "wordpress"
+    state: present
+
+- name: Creando el usuario de wordpress para la base de datos
+  ansible.builtin.mysql_user:
+    name: "wordpress"
+    password: 'wordpress'
+    priv: "wordpress.*:ALL"
+    host: 'localhost'
+    state: present
