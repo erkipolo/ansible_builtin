@@ -32,4 +32,6 @@
 # Ignore CLI configuration files
 #.terraformrc
 #terraform.rc
+
+# configuración de ansible
 ansible.cfg
