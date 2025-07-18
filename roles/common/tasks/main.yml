@@ -11,3 +11,27 @@
 - name: upgrade the system
   ansible.builtin.apt:
     upgrade: yes
+
+- name: Create a secondary, non-root user
+  ansible.builtin.user:
+    name: "{{ NORMAL_USER_NAME }}"
+    password: "{{ NORMAL_USER_PASS }}"
+    shell: /bin/bash
+
+- name: Add authorized key
+  ansible.builtin.authorized_key:
+    user: "{{ NORMAL_USER_NAME }}"
+    key: "{{ lookup('file', '~/.ssh/mitrans_ansible_key.pub')}}"
+
+- name: Install sudo
+  ansible.builtin.apt:
+    name:
+      - sudo
+    state: present
+
+- name: Add normal user to sudoers
+  ansible.builtin.lineinfile:
+    dest: /etc/sudoers
+    regexp: "{{ NORMAL_USER_NAME }} ALL"
+    line: "{{ NORMAL_USER_NAME}} ALL=(ALL) ALL"
+    state: present

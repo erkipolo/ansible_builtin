@@ -1,21 +1,27 @@
 ---
 
 - name: Homelab Configurations
-  hosts: homelab
+  tags: homelab
+  hosts: all
   become: yes
   become_method: sudo
   roles:
     - homelab
 
 - name: Common Tasks
+  tags: common
   hosts: all
   become: yes
   become_method: sudo
+  vars:
+    NORMAL_USER_NAME: 'ppcojo'
+    NORMAL_USER_PASS: '$6$1/g/rmFXEQeo.rBm$H5ab4JI3K5NbYyqp8PF9u9NipArTvygwbCqBrBvyU3fdxLo7K.dxHJSyowdawqmB.F.aPY28zYt0Q6RsZOCHM0'
   roles:
     - common
 
 - name: Instalando Wordpress (Apache + MariaDB + Php)
-  hosts: lamp
+  tags: wordpress_lamp
+  hosts: wordpress_lamp
   become: yes
   become_method: sudo
   roles:
@@ -23,7 +29,8 @@
     - wordpress
 
 - name: Instalando Wordpress (Lighttpd + MariaDB + Php)
-  hosts: llmp
+  tags: wordpress_llmp
+  hosts: wordpress_llmp
   become: yes
   become_method: sudo
   roles:
@@ -31,7 +38,8 @@
     - wordpress
 
 - name: Instalando Wordpress (Nginx + MariaDB + Php)
-  hosts: lnmp
+  tags: wordpress_lnmp
+  hosts: wordpress_lnmp
   become: yes
   become_method: sudo
   roles:
