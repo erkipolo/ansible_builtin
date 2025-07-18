@@ -1,0 +1,11 @@
+wordpress_lamp:
+  hosts:
+    192.168.56.100
+
+wordpress_llmp:
+  hosts:
+    192.168.56.101
+
+wordpress_lnmp:
+  hosts:
+    192.168.56.102
