@@ -196,3 +196,15 @@
     src: 10-ssl.conf.j2
     dest: /etc/dovecot/conf.d/10-ssl.conf
   notify: restart_dovecot
+
+- name: Create directory for users skel
+  ansible.builtin.file:
+    path: "/etc/skel/Maildir/{{ item }}/"
+    state: directory
+    owner: root
+    group: root
+    mode: '0700'
+  loop:
+    - cur
+    - new
+    - tmp
