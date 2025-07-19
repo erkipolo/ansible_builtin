@@ -13,6 +13,7 @@
       - php-json
       - php-imagick
     state: present
+  notify: restart_apache
 
 - name: install roundcube
   ansible.builtin.apt:
@@ -21,6 +22,7 @@
       - roundcube-core
       - roundcube-mysql
     state: present
+  notify: restart_apache
 
 - name: Publicamos roundcube
   ansible.builtin.lineinfile:
@@ -28,6 +30,7 @@
     regexp: "DocumentRoot /var/www/html"
     line: "        DocumentRoot /var/lib/roundcube/public_html"
     state: present
+  notify: restart_apache
 
 - name: Publicamos roundcube
   ansible.builtin.lineinfile:
@@ -35,3 +38,10 @@
     regexp: "Available loglevels"
     line: "        Include conf-available/roundcube.conf"
     state: present
+  notify: restart_apache
+
+- name: Borramos los archivos y carpetas no utilizados
+  ansible.builtin.file:
+      path: "/var/www/html/index.html"
+      state: absent
+  notify: restart_apache

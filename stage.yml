@@ -19,36 +19,43 @@
     - common
 
 - name: Instalando Wordpress (Apache + MariaDB + Php)
-  hosts: wordpress_lamp
+  hosts: dmz_dns
   become: yes
   become_method: sudo
   roles:
-    - lamp
-    - wordpress-src
+    - bind9-common
 
-- name: Instalando Wordpress (Lighttpd + MariaDB + Php)
-  hosts: wordpress_llmp
-  become: yes
-  become_method: sudo
-  roles:
-    - llmp
-    - wordpress-src
+#- name: Instalando Wordpress (Apache + MariaDB + Php)
+#  hosts: wordpress_lamp
+#  become: yes
+#  become_method: sudo
+#  roles:
+#    - lamp
+#    - wordpress-src
 
-- name: Instalando Wordpress (Nginx + MariaDB + Php)
-  hosts: wordpress_lnmp
-  become: yes
-  become_method: sudo
-  roles:
-    - lnmp
-    - wordpress-src
+#- name: Instalando Wordpress (Lighttpd + MariaDB + Php)
+#  hosts: wordpress_llmp
+#  become: yes
+#  become_method: sudo
+#  roles:
+#    - llmp
+#    - wordpress-src
 
-- name: Instalando Correo Electronico Local
-  hosts: roundcube_email_local
-  become: yes
-  become_method: sudo
-  vars:
-    MAIL_NAME: 'mail'
-    MAIL_DOMAIN: 'homelab.cu'
-  roles:
-    - email-local
-    - roundcube-deb
+#- name: Instalando Wordpress (Nginx + MariaDB + Php)
+#  hosts: wordpress_lnmp
+#  become: yes
+#  become_method: sudo
+#  roles:
+#    - lnmp
+#    - wordpress-src
+
+#- name: Instalando Correo Electronico Local
+#  hosts: roundcube_email_local
+#  become: yes
+#  become_method: sudo
+#  vars:
+#    MAIL_NAME: 'mail'
+#    MAIL_DOMAIN: 'homelab.cu'
+#  roles:
+#    - email-local
+#    - roundcube-deb
