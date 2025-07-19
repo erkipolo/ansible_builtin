@@ -1,16 +1,17 @@
 ---
-- name: install PHP wordpress dependencies
+- name: install PHP roundcube dependencies
   ansible.builtin.apt:
     name:
-      - php-cli
-      - php-common
+      - php-intl
+      - php-gd
+      - php-curl
+      - php-ldap
       - php-imap
-      - php-redis
-      - php-snmp
+      - php-mbstring
       - php-xml
       - php-zip
-      - php-mbstring
-      - php-curl
+      - php-json
+      - php-imagick
     state: present
 #
 #   Estamos usando /var/www/html/
@@ -23,27 +24,27 @@
 #    group: www-data
 #    mode: '0755'
 
-- name: Chequea si wordpress esta descargado o no
+- name: Chequea si roundcube esta publicado o no
   ansible.builtin.stat:
-    path: /var/www/html/wp-settings.php
+    path: /var/www/html/config/config.inc.php
   register: file_check
 
 - name: si no esta descargado, descargamos Wordpress 6.8.2
   ansible.builtin.get_url:
-    url: "http://wordpress.org/wordpress-6.8.2.tar.gz"
+    url: "http://github.com/roundcube/roundcubemail/releases/download/1.6.11/roundcubemail-1.6.11-complete.tar.gz"
     dest: /tmp/
   when: file_check.stat.exists == false
 
 - name: si no esta descargado, extraemos el comprimido de Wordpress 6.8.2
   ansible.builtin.unarchive:
-    src: /tmp/wordpress-6.8.2.tar.gz
+    src: /tmp/roundcubemail-1.6.11-complete.tar.gz
     dest: /tmp/
     remote_src: yes
   when: file_check.stat.exists == false
 
-- name: si no esta descargado, copiamos los archivos extraidos a la carpeta de publicacion
+- name: si no esta descargado, copiamos los archivos a la carpeta de publicacion
   ansible.builtin.copy:
-    src: /tmp/wordpress/
+    src: /tmp/roundcubemail-1.6.11/
     dest: /var/www/html/
     remote_src: true
     owner: www-data
@@ -55,21 +56,22 @@
       path: "{{ item }}"
       state: absent
   loop:
-     - /tmp/wordpress-6.8.2.tar.gz
-     - /tmp/wordpress
+     - /tmp/roundcubemail-1.6.11-complete.tar.gz
+     - /tmp/roundcubemail-1.6.11
      - /var/www/html/index.html
      - /var/www/html/index.lighttpd.html
      - /var/www/html/index.nginx-debian.html
 
-- name: Creando la base de datos para wordpress
+
+- name: Creando la base de datos para roundcube
   ansible.builtin.mysql_db:
-    name: "wordpress"
+    name: "roundcube"
     state: present
 
-- name: Creando el usuario de wordpress para la base de datos
+- name: Creando el usuario de roundcube para la base de datos
   ansible.builtin.mysql_user:
-    name: "wordpress"
-    password: 'wordpress'
-    priv: "wordpress.*:ALL"
+    name: "roundcube"
+    password: 'roundcube'
+    priv: "roundcube.*:ALL"
     host: 'localhost'
     state: present

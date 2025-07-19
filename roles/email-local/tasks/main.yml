@@ -167,34 +167,107 @@
     line: 'smtpd_tls_key_file = /etc/ssl/private/ssl-cert-snakeoil.key'
   notify: restart_postfix
 
+- name: ciphers config (server side) 1 de 6
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_tls_mandatory_ciphers ="
+    line: 'smtpd_tls_mandatory_ciphers = high'
+  notify: restart_postfix
+
+- name: ciphers config (server side) 2 de 6
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_tls_ciphers ="
+    line: 'smtpd_tls_ciphers = high'
+  notify: restart_postfix
+
+- name: ciphers config (server side) 3 de 6
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_tls_mandatory_protocols ="
+    line: 'smtpd_tls_mandatory_protocols = !SSLv2, !SSLv3'
+  notify: restart_postfix
+
+- name: ciphers config (server side) 4 de 6
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_tls_protocols ="
+    line: 'smtpd_tls_protocols = $smtpd_tls_mandatory_protocols'
+  notify: restart_postfix
+
+- name: ciphers config (server side) 5 de 6
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_tls_eecdh_grade ="
+    line: 'smtpd_tls_eecdh_grade = ultra'
+  notify: restart_postfix
+
+- name: ciphers config (server side) 6 de 6
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_tls_exclude_ciphers ="
+    line: 'smtpd_tls_exclude_ciphers = NULL, aNULL, EXP, SSLv2, MD5, DES, RC4, aECDH, KRB5-DE5, CBC3-SHA'
+  notify: restart_postfix
+
 - name: Copy template of master.cf config file
   ansible.builtin.template:
     src: master.cf.j2
     dest: /etc/postfix/master.cf
   notify: restart_postfix
 
-- name: Copy template of 10-logging.conf config file
-  ansible.builtin.template:
-    src: 10-logging.conf.j2
+- name: Enable Log on Dovecot
+  ansible.builtin.lineinfile:
     dest: /etc/dovecot/conf.d/10-logging.conf
+    regexp: "^#log_path ="
+    line: 'log_path = /var/log/mail.log'
   notify: restart_dovecot
 
-- name: Copy template of 10-mail.conf config file
-  ansible.builtin.template:
-    src: 10-mail.conf.j2
+- name: Type of MailBoxes on Dovecot
+  ansible.builtin.lineinfile:
     dest: /etc/dovecot/conf.d/10-mail.conf
+    regexp: "^mail_location = mbox"
+    line: 'mail_location = maildir:~/Maildir'
+  notify: restart_dovecot
+
+- name: Disable plaintext auth
+  ansible.builtin.lineinfile:
+    dest: /etc/dovecot/conf.d/10-auth.conf
+    regexp: "^#disable_plaintext_auth ="
+    line: 'disable_plaintext_auth = no'
+  notify: restart_dovecot
+
+- name: Add login auth
+  ansible.builtin.lineinfile:
+    dest: /etc/dovecot/conf.d/10-auth.conf
+    regexp: "^auth_mechanisms = plain"
+    line: 'auth_mechanisms = login plain'
+  notify: restart_dovecot
+
+- name: Enable SSL on Dovecot
+  ansible.builtin.lineinfile:
+    dest: /etc/dovecot/conf.d/10-ssl.conf
+    regexp: "^ssl ="
+    line: 'ssl = yes'
+  notify: restart_dovecot
+
+- name: Setting certificate on Dovecot
+  ansible.builtin.lineinfile:
+    dest: /etc/dovecot/conf.d/10-ssl.conf
+    regexp: "^ssl_cert ="
+    line: 'ssl_cert = </etc/ssl/certs/ssl-cert-snakeoil.pem'
+  notify: restart_dovecot
+
+- name: Setting certificate key on Dovecot
+  ansible.builtin.lineinfile:
+    dest: /etc/dovecot/conf.d/10-ssl.conf
+    regexp: "^ssl_key ="
+    line: 'ssl_key =</etc/ssl/private/ssl-cert-snakeoil.key'
   notify: restart_dovecot
 
 - name: Copy template of 10-master.conf config file
   ansible.builtin.template:
     src: 10-master.conf.j2
     dest: /etc/dovecot/conf.d/10-master.conf
-  notify: restart_dovecot
-
-- name: Copy template of 10-ssl.conf config file
-  ansible.builtin.template:
-    src: 10-ssl.conf.j2
-    dest: /etc/dovecot/conf.d/10-ssl.conf
   notify: restart_dovecot
 
 - name: Create directory for users skel

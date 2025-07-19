@@ -10,8 +10,14 @@
 ## To see how get to the solution
 * [Youtube link coming soon](Próximamente)
 
-## Requirements
+## General Requirements
 - Proxmox installed
 - Debian containers instances
 - SSH Public Key inside the Debian containers instances
 - Access to Debian repository
+
+## Email-Local Notes
+- After deploy you need to create the users: `adduser --gecos "" username`
+
+## Webmail RoundCube (via download)
+- After deploy to install you need to access: http://localhost/installer/
