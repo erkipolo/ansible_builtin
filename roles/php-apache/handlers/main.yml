@@ -1,6 +1,6 @@
 - name: restart_apache
   ansible.builtin.systemd_service:
-    state: restarted
     name: apache2
-    enabled: true
     masked: no
+    enabled: true
+    state: restarted

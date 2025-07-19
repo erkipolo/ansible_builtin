@@ -9,3 +9,7 @@ wordpress_llmp:
 wordpress_lnmp:
   hosts:
     192.168.56.102
+
+email_local:
+  hosts:
+    192.168.56.103

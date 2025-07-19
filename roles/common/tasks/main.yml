@@ -21,7 +21,7 @@
 - name: Add authorized key
   ansible.builtin.authorized_key:
     user: "{{ NORMAL_USER_NAME }}"
-    key: "{{ lookup('file', '~/.ssh/mitrans_ansible_key.pub')}}"
+    key: "{{ lookup('file', '{{ NORMAL_USER_PUB_KEY }}')}}"
 
 - name: Install sudo
   ansible.builtin.apt:
