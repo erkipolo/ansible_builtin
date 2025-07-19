@@ -24,7 +24,7 @@
   become_method: sudo
   roles:
     - lamp
-    - wordpress
+    - wordpress-src
 
 - name: Instalando Wordpress (Lighttpd + MariaDB + Php)
   hosts: wordpress_llmp
@@ -32,7 +32,7 @@
   become_method: sudo
   roles:
     - llmp
-    - wordpress
+    - wordpress-src
 
 - name: Instalando Wordpress (Nginx + MariaDB + Php)
   hosts: wordpress_lnmp
@@ -40,7 +40,7 @@
   become_method: sudo
   roles:
     - lnmp
-    - wordpress
+    - wordpress-src
 
 - name: Instalando Correo Electronico Local
   hosts: roundcube_email_local
@@ -51,5 +51,4 @@
     MAIL_DOMAIN: 'homelab.cu'
   roles:
     - email-local
-    - lamp
-    - roundcube
+    - roundcube-deb
