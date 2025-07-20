@@ -18,12 +18,12 @@
   roles:
     - common
 
-- name: Instalando Wordpress (Apache + MariaDB + Php)
-  hosts: dmz_dns
+- name: dhcp_dns
+  hosts: dhcp_dns
   become: yes
   become_method: sudo
   roles:
-    - dmz-dns-homelab
+    - dhcp
 
 #- name: Instalando Wordpress (Apache + MariaDB + Php)
 #  hosts: wordpress_lamp

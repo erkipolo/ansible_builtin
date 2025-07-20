@@ -1,0 +1,5 @@
+- name: Install dhcp
+  ansible.builtin.apt:
+    name:
+      - isc-dhcp-server
+    state: present

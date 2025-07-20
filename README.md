@@ -2,7 +2,7 @@
 **Deploy inside Debian instances on Proxmox with Ansible**
 
 ## Goal
-![Logo](Objetivo.png)
+![Logo](Objetivo.svg)
 
 ## Autor
 * [Erki Polo Manresa](https://linkedin.com/in/erkipolo)
