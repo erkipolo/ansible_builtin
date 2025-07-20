@@ -1,0 +1,16 @@
+zone "homelab.cu" {
+  type master;
+  file "dmz.dir";
+};
+zone "56.168.192.in-addr.arpa" {
+  type master;
+  file "dmz.inv";
+};
+zone "oc.homelab.cu" {
+  type master;
+  file "oc.dir";
+};
+zone "66.168.192.in-addr.arpa" {
+  type master;
+  file "oc.inv";
+};

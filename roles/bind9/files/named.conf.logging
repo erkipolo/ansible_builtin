@@ -1,0 +1,10 @@
+logging {
+  channel log {
+    file "/var/log/named/named.log";
+    severity debug 3;
+    print-time yes;
+    print-category yes;
+    print-severity yes;
+  };
+  category security {log;};
+};

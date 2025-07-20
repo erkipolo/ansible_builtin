@@ -1,0 +1,23 @@
+- name: copy dmz dns homelab configurations
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: /var/cache/bind/
+    owner: bind
+    group: bind
+    mode: '0644'
+  with_items:
+    - dmz.dir
+    - dmz.inv
+    - nac.del
+    - nac.dir
+    - nac.inv
+    - named.conf.dmz
+    - named.conf.local
+    - named.conf.nac
+    - named.conf.www
+    - oc.dir
+    - oc.inv
+    - www.del
+    - www.dir
+    - www.inv
+  notify: restart_bind9

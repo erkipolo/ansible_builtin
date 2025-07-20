@@ -1,0 +1,31 @@
+$TTL  86400
+@  IN  SOA  homelab.cu. root.homelab.cu. (
+   2020040291    ; Serial
+         3600    ; Refresh
+          900    ; Retry
+      1209600    ; Expire
+        86400 )  ; Negative Cache TTL
+;
+@        IN  NS      dmz-dns1.homelab.cu.
+14       IN  PTR     homelab.cu.
+;
+1        IN  PTR     vpn-fw.homelab.cu.
+2        IN  PTR     www-fw.homelab.cu.
+3        IN  PTR     nac-fw.homelab.cu.
+4        IN  PTR     cap-fw.homelab.cu.
+;
+10       IN  PTR     dmz-dns1.homelab.cu.
+12       IN  PTR     dmz-mail.homelab.cu.
+14       IN  PTR     dmz-web1.homelab.cu.
+16       IN  PTR     dmz-cdd1.homelab.cu.
+18       IN  PTR     dmz-http-reverse.homelab.cu.
+20       IN  PTR     dmz-proxy.homelab.cu.
+22       IN  PTR     dmz-download.homelab.cu.
+24       IN  PTR     dmz-repository.homelab.cu.
+;
+254      IN  PTR     backup01.homelab.cu.
+;
+250      IN  PTR     nodo01.homelab.cu.
+249      IN  PTR     nodo02.homelab.cu.
+248      IN  PTR     nodo03.homelab.cu.
+247      IN  PTR     nodo04.homelab.cu.

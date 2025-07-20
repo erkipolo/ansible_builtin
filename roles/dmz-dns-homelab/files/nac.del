@@ -1,0 +1,15 @@
+$ORIGIN 0/29.67.6.190.in-addr.arpa.
+$TTL 86400
+@  IN  SOA  homelab.cu. root.homelab.cu. (
+   2020040291    ; Serial
+         3600    ; Refresh
+          900    ; Retry
+      1209600    ; Expire
+        86400 )  ; Negative Cache TTL
+;
+@   IN    NS    ns2.homelab.cu.
+2   IN    PTR   ns2.homelab.cu.
+3   IN    PTR   mail.homelab.cu.
+4   IN    PTR   ha.homelab.cu.
+5   IN    PTR   none1.homelab.cu.
+6   IN    PTR   none2.homelab.cu.

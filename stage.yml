@@ -23,7 +23,7 @@
   become: yes
   become_method: sudo
   roles:
-    - bind9-common
+    - dmz-dns-homelab
 
 #- name: Instalando Wordpress (Apache + MariaDB + Php)
 #  hosts: wordpress_lamp

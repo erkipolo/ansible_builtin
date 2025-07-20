@@ -1,0 +1,29 @@
+options {
+  directory "/var/cache/bind";
+  forwarders {
+    200.55.128.3;
+    200.55.128.4;
+    8.8.8.8;
+    8.8.4.4;
+  };
+  recursion yes;
+  auth-nxdomain no;
+  listen-on-v6 { any; };
+  dnssec-validation no;
+  version "";
+  notify no;
+  empty-zones-enable no;
+  minimal-responses no;
+  allow-recursion { any; };
+  allow-query { any; };
+  allow-query-cache { any; };
+  allow-transfer { none; };
+  rate-limit {
+    ipv4-prefix-length 32;
+    window 10;
+    responses-per-second 25;
+    errors-per-second 5;
+    nxdomains-per-second 5;
+    slip 2;
+  };
+};

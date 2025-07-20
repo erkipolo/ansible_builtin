@@ -1,0 +1,40 @@
+$TTL 86400
+@  IN  SOA  homelab.cu. root.homelab.cu. (
+   2020040291    ; Serial
+         3600    ; Refresh
+          900    ; Retry
+      1209600    ; Expire
+        86400 )  ; Negative Cache TTL
+;
+@          IN  NS  dmz-dns1.homelab.cu.
+@          IN  MX  10 dmz-mail.homelab.cu.
+@          IN  A   192.168.56.14
+@          IN  TXT "v=spf1 a mx a:dmz-mail.homelab.cu mx:dmz-mail.homelab.cu ip4:192.168.56.12/32 -all"
+;
+vpn-fw     IN  A  192.168.56.1
+www-fw     IN  A  192.168.56.2
+nac-fw     IN  A  192.168.56.3
+cap-fw     IN  A  192.168.56.4
+;
+dmz-dns1          IN  A  192.168.56.10
+dmz-mail          IN  A  192.168.56.12
+dmz-web1          IN  A  192.168.56.14
+dmz-cdd1          IN  A  192.168.56.16
+dmz-http-reverse  IN  A  192.168.56.18
+dmz-proxy         IN  A  192.168.56.20
+dmz-download      IN  A  192.168.56.22
+dmz-repository    IN  A  192.168.56.24
+;
+backup01   IN  A  192.168.56.254
+;
+nodo01     IN  A  192.168.56.250
+nodo02     IN  A  192.168.56.249
+nodo03     IN  A  192.168.56.248
+nodo04     IN  A  192.168.56.247
+;
+mail       IN  CNAME dmz-mail
+www        IN  CNAME dmz-web1
+cdd        IN  CNAME dmz-cdd1
+proxy      IN  CNAME dmz-proxy
+download   IN  CNAME dmz-download
+repo       IN  CNAME dmz-repository
