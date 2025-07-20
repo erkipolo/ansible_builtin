@@ -23,7 +23,7 @@
   become: yes
   become_method: sudo
   roles:
-    - dhcp
+    - dns
 
 #- name: Instalando Wordpress (Apache + MariaDB + Php)
 #  hosts: wordpress_lamp
