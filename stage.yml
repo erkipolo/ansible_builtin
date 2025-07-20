@@ -18,8 +18,8 @@
   roles:
     - common
 
-- name: dhcp_dns
-  hosts: dhcp_dns
+- name: infrastructure
+  hosts: infrastructure
   become: yes
   become_method: sudo
   roles:
