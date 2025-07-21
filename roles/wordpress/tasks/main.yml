@@ -1,0 +1,67 @@
+---
+- name: install PHP wordpress dependencies
+  ansible.builtin.apt:
+    name:
+      - php-cli
+      - php-common
+      - php-imap
+      - php-redis
+      - php-snmp
+      - php-xml
+      - php-zip
+      - php-mbstring
+      - php-curl
+    state: present
+
+- name: installing wordpress
+  ansible.builtin.apt:
+    name:
+      - wordpress
+      - wordpress-l10n
+
+- name: Setting wordpress public site
+  ansible.builtin.lineinfile:
+    dest: /etc/apache2/sites-available/default-ssl.conf
+    regexp: "DocumentRoot /var/www/html"
+    line: "        DocumentRoot /usr/share/wordpress"
+    state: present
+  notify: restart_apache
+
+- name: copy wordpress configurations
+  ansible.builtin.copy:
+    src: "wordpress.conf"
+    dest: /etc/apache2/conf-available/wordpress.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: restart_apache
+
+- name: Setting wordpress configurations
+  ansible.builtin.lineinfile:
+    dest: /etc/apache2/sites-available/default-ssl.conf
+    regexp: "Available loglevels"
+    line: "        Include conf-available/wordpress.conf"
+    state: present
+  notify: restart_apache
+
+- name: Creando la base de datos para wordpress
+  ansible.builtin.mysql_db:
+    name: "wordpress"
+    state: present
+
+- name: Creando el usuario de wordpress para la base de datos
+  ansible.builtin.mysql_user:
+    name: "wordpress"
+    password: 'wordpress'
+    priv: "wordpress.*:ALL"
+    host: 'localhost'
+    state: present
+
+- name: copy database wordpress configurations
+  ansible.builtin.copy:
+    src: "config-default.php"
+    dest: /etc/wordpress/config-default.php
+    owner: root
+    group: root
+    mode: '0644'
+  notify: restart_apache

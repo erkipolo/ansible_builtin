@@ -1,3 +1,7 @@
-infrastructure:
+dns:
   hosts:
     192.168.56.100
+
+wordpress:
+  hosts:
+    192.168.56.101
