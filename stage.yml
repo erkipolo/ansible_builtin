@@ -31,3 +31,10 @@
   become_method: sudo
   roles:
     - wordpress
+
+- name: Semaphore (MariaDB) version deb
+  hosts: semaphore
+  become: yes
+  become_method: sudo
+  roles:
+    - semaphore

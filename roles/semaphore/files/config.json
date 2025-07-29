@@ -1,0 +1,13 @@
+{
+ 	"mysql": {
+ 		"host": "127.0.0.1:3306",
+ 		"user": "semaphore",
+ 		"pass": "semaphore",
+ 		"name": "semaphore"
+ 	},
+ 	"dialect": "mysql",
+ 	"tmp_path": "/tmp/semaphore",
+ 	"cookie_hash": "eiCF3qOLTDZyQSOX3IszcMXaTIzgXbMVsWq+wk9Vf14=",
+ 	"cookie_encryption": "AsL2qd3PUGFtq2V9I/Wx7BnKY0j22U+TkLCb2nYnR6c=",
+ 	"access_key_encryption": "cuz7d6783SfkO6V5f3Z88xYgdo4dN0jTxqT52K3Dexs="
+ }
