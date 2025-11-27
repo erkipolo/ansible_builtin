@@ -1,11 +1,11 @@
-wordpress_lamp:
+dns:
   hosts:
     192.168.56.100
 
-wordpress_llmp:
+wordpress:
   hosts:
     192.168.56.101
 
-wordpress_lnmp:
+semaphore:
   hosts:
     192.168.56.102

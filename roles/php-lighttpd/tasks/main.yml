@@ -4,11 +4,11 @@
     src: /etc/lighttpd/conf-available/10-fastcgi.conf
     dest: /etc/lighttpd/conf-enabled/10-fastcgi.conf
     state: link
+  notify: restart_lighttpd
 
 - name: Habilitamos el modulo de fastcgi-php de PHP para lighttpd
   ansible.builtin.file:
     src: /etc/lighttpd/conf-available/15-fastcgi-php.conf
     dest: /etc/lighttpd/conf-enabled/15-fastcgi-php.conf
     state: link
-
   notify: restart_lighttpd

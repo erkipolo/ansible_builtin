@@ -1,7 +1,6 @@
 ---
 
 - name: Homelab Configurations
-  tags: homelab
   hosts: all
   become: yes
   become_method: sudo
@@ -9,39 +8,33 @@
     - homelab
 
 - name: Common Tasks
-  tags: common
   hosts: all
   become: yes
   become_method: sudo
   vars:
     NORMAL_USER_NAME: 'ppcojo'
     NORMAL_USER_PASS: '$6$1/g/rmFXEQeo.rBm$H5ab4JI3K5NbYyqp8PF9u9NipArTvygwbCqBrBvyU3fdxLo7K.dxHJSyowdawqmB.F.aPY28zYt0Q6RsZOCHM0'
+    NORMAL_USER_PUB_KEY: '~/.ssh/mitrans_ansible_key.pub'
   roles:
     - common
 
-- name: Instalando Wordpress (Apache + MariaDB + Php)
-  tags: wordpress_lamp
-  hosts: wordpress_lamp
+- name: Dns (Bind9)
+  hosts: dns
   become: yes
   become_method: sudo
   roles:
-    - lamp
+    - dns
+
+- name: Wordpress (Apache + MariaDB + Php) version deb
+  hosts: wordpress
+  become: yes
+  become_method: sudo
+  roles:
     - wordpress
 
-- name: Instalando Wordpress (Lighttpd + MariaDB + Php)
-  tags: wordpress_llmp
-  hosts: wordpress_llmp
+- name: Semaphore (MariaDB) version deb
+  hosts: semaphore
   become: yes
   become_method: sudo
   roles:
-    - llmp
-    - wordpress
-
-- name: Instalando Wordpress (Nginx + MariaDB + Php)
-  tags: wordpress_lnmp
-  hosts: wordpress_lnmp
-  become: yes
-  become_method: sudo
-  roles:
-    - lnmp
-    - wordpress
+    - semaphore

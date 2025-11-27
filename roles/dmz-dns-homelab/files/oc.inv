@@ -1,0 +1,13 @@
+$TTL  86400
+@  IN  SOA  oc.homelab.cu. root.oc.homelab.cu. (
+   2020040291    ; Serial
+         3600    ; Refresh
+          900    ; Retry
+      1209600    ; Expire
+        86400 )  ; Negative Cache TTL
+;
+@        IN  NS      ns.oc.homelab.cu.
+7        IN  PTR     oc.homelab.cu.
+;
+7        IN  PTR     ns.oc.homelab.cu.
+7        IN  PTR     mail.oc.homelab.cu.

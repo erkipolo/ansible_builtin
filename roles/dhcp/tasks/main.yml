@@ -1,0 +1,21 @@
+- name: Install dhcp
+  ansible.builtin.apt:
+    name:
+      - isc-dhcp-server
+    state: present
+
+- name: Setting interfaces were server (dhcpd) accept DHCP requests
+  ansible.builtin.lineinfile:
+    dest: /etc/default/isc-dhcp-server
+    regexp: "INTERFACESv4="
+    line: 'INTERFACESv4="eth0"'
+  notify: restart_dhcpd
+
+- name: copy dhcpd homelab configurations
+  ansible.builtin.copy:
+    src: "dhcpd.conf"
+    dest: /etc/dhcp/dhcpd.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: restart_dhcpd

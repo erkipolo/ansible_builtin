@@ -1,0 +1,6 @@
+- name: restart_dhcpd
+  ansible.builtin.systemd_service:
+    name: isc-dhcp-server
+    masked: no
+    enabled: true
+    state: restarted

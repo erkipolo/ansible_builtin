@@ -1,0 +1,71 @@
+- name: Create a semaphore non-root user
+  ansible.builtin.user:
+    name: "semaphore"
+    password_lock: true
+    system: true
+    shell: /bin/false
+
+
+- name: Creando la base de datos para semaphore
+  ansible.builtin.mysql_db:
+    name: "semaphore"
+    state: present
+
+- name: Creando el usuario de semaphore para la base de datos
+  ansible.builtin.mysql_user:
+    name: "semaphore"
+    password: 'semaphore'
+    priv: "semaphore.*:ALL"
+    host: 'localhost'
+    state: present
+
+- name: Chequea if semaphore are installed
+  ansible.builtin.stat:
+    path: /etc/semaphore/config.json
+  register: file_check
+
+- name: Install a .deb package from the internet
+  ansible.builtin.apt:
+    deb: http://github.com/semaphoreui/semaphore/releases/download/v2.15.0/semaphore_2.15.0_linux_amd64.deb
+  when: file_check.stat.exists == false
+
+- name: Create directory for semaphore
+  ansible.builtin.file:
+    path: /etc/semaphore
+    state: directory
+    owner: semaphore
+    group: semaphore
+    mode: '0755'
+  when: file_check.stat.exists == false
+
+- name: copy config.json file
+  ansible.builtin.copy:
+    src: "config.json"
+    dest: /etc/semaphore/
+    owner: semaphore
+    group: semaphore
+    mode: '0644'
+  when: file_check.stat.exists == false
+
+#- name: config ansible with config.json
+#  ansible.builtin.shell:
+#    cmd: semaphore setup --config config.json
+#    chdir: /etc/semaphore/
+#  when: file_check.stat.exists == false
+
+- name: install ansible
+  ansible.builtin.apt:
+    name:
+      - ansible
+      - sshpass
+    state: present
+
+- name: copy semaphore.service file
+  ansible.builtin.copy:
+    src: "semaphore.service"
+    dest: /etc/systemd/system/
+    owner: root
+    group: root
+    mode: '0755'
+  notify: restart_semaphore
+  when: file_check.stat.exists == false

@@ -9,16 +9,17 @@
   ansible.builtin.template:
     src: default.j2
     dest: /etc/nginx/sites-available/default
+  notify: restart_nginx
 
 - name: Configuramos el HTTPS
   ansible.builtin.template:
     src: ssl_default.j2
     dest: /etc/nginx/sites-available/ssl_default
+  notify: restart_nginx
 
 - name: Habilitamos el HTTPS
   ansible.builtin.file:
     src: /etc/nginx/sites-available/ssl_default
     dest: /etc/nginx/sites-enabled/ssl_default
     state: link
-
   notify: restart_nginx

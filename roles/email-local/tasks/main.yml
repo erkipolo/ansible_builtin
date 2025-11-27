@@ -1,0 +1,283 @@
+---
+- name: Enable logs for postfix
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^maillog_file ="
+    line: 'maillog_file = /var/log/mail.log'
+  notify: restart_postfix
+
+- name: Your domain name
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^mydomain ="
+    line: 'mydomain = {{ MAIL_DOMAIN }}'
+  notify: restart_postfix
+
+- name: The name of your mail server
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^myhostname ="
+    line: 'myhostname = {{ MAIL_NAME }}.$mydomain'
+  notify: restart_postfix
+
+- name: domain name that will appear in the "From" address
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^myorigin ="
+    line: 'myorigin = $mydomain'
+  notify: restart_postfix
+
+- name: Specifies which interfaces Postfx listen
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^inet_interfaces ="
+    line: 'inet_interfaces = all'
+  notify: restart_postfix
+
+- name: Specifies which protocols Postfx listen
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^inet_protocols ="
+    line: 'inet_protocols = all'
+  notify: restart_postfix
+
+- name: Specifies the type of mailbox
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^home_mailbox ="
+    line: 'home_mailbox = Maildir/'
+  notify: restart_postfix
+
+- name: To where destinations are emails accepted
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^mydestination ="
+    line: 'mydestination = $mydomain, localhost.$mydomain, localhost'
+  notify: restart_postfix
+
+- name: To accept email from the networks without ask
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^mynetworks ="
+    line: 'mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128'
+  notify: restart_postfix
+
+- name: Enable Auth Service for Client Using Dovecot (1 de 5)
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_sasl_auth_enable ="
+    line: 'smtpd_sasl_auth_enable = yes'
+  notify: restart_postfix
+
+- name: Enable Auth Service for Client Using Dovecot (2 de 5)
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_sasl_type ="
+    line: 'smtpd_sasl_type = dovecot'
+  notify: restart_postfix
+
+- name: Enable Auth Service for Client Using Dovecot (3 de 5)
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_sasl_path ="
+    line: 'smtpd_sasl_path = private/auth'
+  notify: restart_postfix
+
+- name: Enable Auth Service for Client Using Dovecot (4 de 5)
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_sasl_security_options ="
+    line: 'smtpd_sasl_security_options = noanonymous'
+  notify: restart_postfix
+
+- name: Enable Auth Service for Client Using Dovecot (5 de 5)
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^broken_sasl_auth_clients ="
+    line: 'broken_sasl_auth_clients = yes'
+  notify: restart_postfix
+
+- name: Enable use TLS between servers (1 de 3)
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtp_tls_note_starttls_offer ="
+    line: 'smtp_tls_note_starttls_offer = yes'
+  notify: restart_postfix
+
+- name: Enable use TLS between servers (2 de 3)
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtp_tls_security_level ="
+    line: 'smtp_tls_security_level = may'
+  notify: restart_postfix
+
+- name: Enable use TLS between servers (3 de 3)
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtp_tls_session_cache_database ="
+    line: 'smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache'
+  notify: restart_postfix
+
+- name: Enable use TLS on client (1 de 5)
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_use_tls ="
+    line: 'smtpd_use_tls = yes'
+  notify: restart_postfix
+
+- name: Enable use TLS on client (2 de 5)
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_tls_loglevel ="
+    line: 'smtpd_tls_loglevel = 1'
+  notify: restart_postfix
+
+- name: Enable use TLS on client (3 de 5)
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_tls_received_header ="
+    line: 'smtpd_tls_received_header = yes'
+  notify: restart_postfix
+
+- name: Enable use TLS on client (4 de 5)
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_tls_security_level ="
+    line: 'smtpd_tls_security_level = may'
+  notify: restart_postfix
+
+- name: Enable use TLS on client (5 de 5)
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_tls_session_cache_database ="
+    line: 'smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache'
+  notify: restart_postfix
+
+- name: Tell what TLS certificate to use
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_tls_cert_file ="
+    line: 'smtpd_tls_cert_file = /etc/ssl/certs/ssl-cert-snakeoil.pem'
+  notify: restart_postfix
+
+- name: Tell what TLS certificate key to use
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_tls_key_file ="
+    line: 'smtpd_tls_key_file = /etc/ssl/private/ssl-cert-snakeoil.key'
+  notify: restart_postfix
+
+- name: ciphers config (server side) 1 de 6
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_tls_mandatory_ciphers ="
+    line: 'smtpd_tls_mandatory_ciphers = high'
+  notify: restart_postfix
+
+- name: ciphers config (server side) 2 de 6
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_tls_ciphers ="
+    line: 'smtpd_tls_ciphers = high'
+  notify: restart_postfix
+
+- name: ciphers config (server side) 3 de 6
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_tls_mandatory_protocols ="
+    line: 'smtpd_tls_mandatory_protocols = !SSLv2, !SSLv3'
+  notify: restart_postfix
+
+- name: ciphers config (server side) 4 de 6
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_tls_protocols ="
+    line: 'smtpd_tls_protocols = $smtpd_tls_mandatory_protocols'
+  notify: restart_postfix
+
+- name: ciphers config (server side) 5 de 6
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_tls_eecdh_grade ="
+    line: 'smtpd_tls_eecdh_grade = ultra'
+  notify: restart_postfix
+
+- name: ciphers config (server side) 6 de 6
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_tls_exclude_ciphers ="
+    line: 'smtpd_tls_exclude_ciphers = NULL, aNULL, EXP, SSLv2, MD5, DES, RC4, aECDH, KRB5-DE5, CBC3-SHA'
+  notify: restart_postfix
+
+- name: Copy template of master.cf config file
+  ansible.builtin.template:
+    src: master.cf.j2
+    dest: /etc/postfix/master.cf
+  notify: restart_postfix
+
+- name: Enable Log on Dovecot
+  ansible.builtin.lineinfile:
+    dest: /etc/dovecot/conf.d/10-logging.conf
+    regexp: "^#log_path ="
+    line: 'log_path = /var/log/mail.log'
+  notify: restart_dovecot
+
+- name: Type of MailBoxes on Dovecot
+  ansible.builtin.lineinfile:
+    dest: /etc/dovecot/conf.d/10-mail.conf
+    regexp: "^mail_location = mbox"
+    line: 'mail_location = maildir:~/Maildir'
+  notify: restart_dovecot
+
+- name: Disable plaintext auth
+  ansible.builtin.lineinfile:
+    dest: /etc/dovecot/conf.d/10-auth.conf
+    regexp: "^#disable_plaintext_auth ="
+    line: 'disable_plaintext_auth = no'
+  notify: restart_dovecot
+
+- name: Add login auth
+  ansible.builtin.lineinfile:
+    dest: /etc/dovecot/conf.d/10-auth.conf
+    regexp: "^auth_mechanisms = plain"
+    line: 'auth_mechanisms = login plain'
+  notify: restart_dovecot
+
+- name: Enable SSL on Dovecot
+  ansible.builtin.lineinfile:
+    dest: /etc/dovecot/conf.d/10-ssl.conf
+    regexp: "^ssl ="
+    line: 'ssl = yes'
+  notify: restart_dovecot
+
+- name: Setting certificate on Dovecot
+  ansible.builtin.lineinfile:
+    dest: /etc/dovecot/conf.d/10-ssl.conf
+    regexp: "^ssl_cert ="
+    line: 'ssl_cert = </etc/ssl/certs/ssl-cert-snakeoil.pem'
+  notify: restart_dovecot
+
+- name: Setting certificate key on Dovecot
+  ansible.builtin.lineinfile:
+    dest: /etc/dovecot/conf.d/10-ssl.conf
+    regexp: "^ssl_key ="
+    line: 'ssl_key =</etc/ssl/private/ssl-cert-snakeoil.key'
+  notify: restart_dovecot
+
+- name: Copy template of 10-master.conf config file
+  ansible.builtin.template:
+    src: 10-master.conf.j2
+    dest: /etc/dovecot/conf.d/10-master.conf
+  notify: restart_dovecot
+
+- name: Create directory for users skel
+  ansible.builtin.file:
+    path: "/etc/skel/Maildir/{{ item }}/"
+    state: directory
+    owner: root
+    group: root
+    mode: '0700'
+  loop:
+    - cur
+    - new
+    - tmp

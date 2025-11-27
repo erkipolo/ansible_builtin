@@ -4,10 +4,10 @@
     path: /etc/nginx/sites-available/php/
     state: directory
     mode: '0755'
+  notify: restart_nginx
 
 - name: Configuramos el site with php support
   ansible.builtin.template:
     src: php_default.j2
     dest: /etc/nginx/sites-available/php/php_default
-
   notify: restart_nginx

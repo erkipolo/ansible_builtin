@@ -1,0 +1,47 @@
+---
+- name: install PHP roundcube dependencies
+  ansible.builtin.apt:
+    name:
+      - php-intl
+      - php-gd
+      - php-curl
+      - php-ldap
+      - php-imap
+      - php-mbstring
+      - php-xml
+      - php-zip
+      - php-json
+      - php-imagick
+    state: present
+  notify: restart_apache
+
+- name: install roundcube
+  ansible.builtin.apt:
+    name:
+      - roundcube
+      - roundcube-core
+      - roundcube-mysql
+    state: present
+  notify: restart_apache
+
+- name: Publicamos roundcube
+  ansible.builtin.lineinfile:
+    dest: /etc/apache2/sites-available/default-ssl.conf
+    regexp: "DocumentRoot /var/www/html"
+    line: "        DocumentRoot /var/lib/roundcube/public_html"
+    state: present
+  notify: restart_apache
+
+- name: Publicamos roundcube
+  ansible.builtin.lineinfile:
+    dest: /etc/apache2/sites-available/default-ssl.conf
+    regexp: "Available loglevels"
+    line: "        Include conf-available/roundcube.conf"
+    state: present
+  notify: restart_apache
+
+- name: Borramos los archivos y carpetas no utilizados
+  ansible.builtin.file:
+      path: "/var/www/html/index.html"
+      state: absent
+  notify: restart_apache

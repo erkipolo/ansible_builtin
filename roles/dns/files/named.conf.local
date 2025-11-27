@@ -1,0 +1,13 @@
+view "dmz" {
+  allow-query {127.0.0.1;192.168.56.0/24;};
+  recursion yes;
+  match-clients {127.0.0.1;192.168.56.0/24;};
+  zone "homelab.cu" {
+    type master;
+    file "dmz.dir";
+  };
+  zone "56.168.192.in-addr.arpa" {
+    type master;
+    file "dmz.inv";
+  };
+};

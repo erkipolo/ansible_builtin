@@ -1,0 +1,26 @@
+$ORIGIN homelab.cu.
+$TTL 86400
+@  IN  SOA  homelab.cu. root.homelab.cu. (
+   2020040291    ; Serial
+         3600    ; Refresh
+          900    ; Retry
+      1209600    ; Expire
+        86400 )  ; Negative Cache TTL
+;
+@     IN    NS    ns1.homelab.cu.
+@     IN    MX    10 mail.homelab.cu.
+@     IN    A     190.6.78.52
+@     IN    TXT   "v=spf1 a mx a:mail.homelab.cu mx:mail.homelab.cu ip4:190.6.78.51/32 -all"
+;
+ns1   IN    A     190.6.78.50
+mail  IN    A     190.6.78.51
+ha    IN    A     190.6.78.52
+;
+www   IN    CNAME ha
+;
+oc           IN    A     190.6.78.50
+oc    	IN    MX    10 mail.homelab.cu.
+oc    	IN    TXT   "v=spf1 a mx a:mail.homelab.cu mx:mail.homelab.cu ip4:190.6.78.51/32 -all"
+;
+;_acme-challenge.gw.homelab.cu.	300	IN	TXT	"Jw3LlrmkXtnLdKvTzt2kql5bj-haCu4acpHsT78SzWU"
+;

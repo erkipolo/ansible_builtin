@@ -10,9 +10,3 @@
     name:
       - python3-mysqldb
     state: present
-
-- name: Arrancamos y Habilitamos en el arranque MariaDB
-  ansible.builtin.service:
-    name: mysql
-    state: started
-    enabled: yes

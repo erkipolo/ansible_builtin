@@ -1,0 +1,76 @@
+---
+- name: install PHP roundcube dependencies
+  ansible.builtin.apt:
+    name:
+      - php-intl
+      - php-gd
+      - php-curl
+      - php-ldap
+      - php-imap
+      - php-mbstring
+      - php-xml
+      - php-zip
+      - php-json
+      - php-imagick
+    state: present
+#
+#   Estamos usando /var/www/html/
+#
+#- name: Create directory for site
+#  ansible.builtin.file:
+#    path: /var/www/mydomain.com
+#    state: directory
+#    owner: www-data
+#    group: www-data
+#    mode: '0755'
+
+- name: Chequea si roundcube esta publicado o no
+  ansible.builtin.stat:
+    path: /var/www/html/config/config.inc.php
+  register: file_check
+
+- name: si no esta descargado, descargamos Wordpress 6.8.2
+  ansible.builtin.get_url:
+    url: "http://github.com/roundcube/roundcubemail/releases/download/1.6.11/roundcubemail-1.6.11-complete.tar.gz"
+    dest: /tmp/
+  when: file_check.stat.exists == false
+
+- name: si no esta descargado, extraemos el comprimido de Wordpress 6.8.2
+  ansible.builtin.unarchive:
+    src: /tmp/roundcubemail-1.6.11-complete.tar.gz
+    dest: /tmp/
+    remote_src: yes
+  when: file_check.stat.exists == false
+
+- name: si no esta descargado, copiamos los archivos a la carpeta de publicacion
+  ansible.builtin.copy:
+    src: /tmp/roundcubemail-1.6.11/
+    dest: /var/www/html/
+    remote_src: true
+    owner: www-data
+    group: www-data
+  when: file_check.stat.exists == false
+
+- name: Borramos los archivos y carpetas no utilizados
+  ansible.builtin.file:
+      path: "{{ item }}"
+      state: absent
+  loop:
+     - /tmp/roundcubemail-1.6.11-complete.tar.gz
+     - /tmp/roundcubemail-1.6.11
+     - /var/www/html/index.html
+     - /var/www/html/index.lighttpd.html
+     - /var/www/html/index.nginx-debian.html
+
+- name: Creando la base de datos para roundcube
+  ansible.builtin.mysql_db:
+    name: "roundcube"
+    state: present
+
+- name: Creando el usuario de roundcube para la base de datos
+  ansible.builtin.mysql_user:
+    name: "roundcube"
+    password: 'roundcube'
+    priv: "roundcube.*:ALL"
+    host: 'localhost'
+    state: present

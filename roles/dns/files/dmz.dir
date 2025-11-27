@@ -1,0 +1,21 @@
+$TTL 86400
+@  IN  SOA  homelab.cu. root.homelab.cu. (
+   2020040291    ; Serial
+         3600    ; Refresh
+          900    ; Retry
+      1209600    ; Expire
+        86400 )  ; Negative Cache TTL
+;
+@       IN  NS    ns.homelab.cu.
+@       IN  MX    10 mail.homelab.cu.
+@       IN  A     192.168.56.101
+@       IN  TXT   "v=spf1 a mx a:mail.homelab.cu mx:mail.homelab.cu ip4:192.168.56.101/32 -all"
+;
+gw      IN  A     192.168.56.1
+ns      IN  A     192.168.56.100
+web1    IN  A     192.168.56.101
+web2    IN  A     192.168.56.102
+mail    IN  A     192.168.56.103
+;
+smtp    IN  CNAME mail
+www     IN  CNAME web1

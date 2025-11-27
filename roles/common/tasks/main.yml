@@ -4,14 +4,6 @@
     src: sources.list.j2
     dest: /etc/apt/sources.list
 
-- name: update repository index
-  ansible.builtin.apt:
-    update_cache: yes
-
-- name: upgrade the system
-  ansible.builtin.apt:
-    upgrade: yes
-
 - name: Create a secondary, non-root user
   ansible.builtin.user:
     name: "{{ NORMAL_USER_NAME }}"
@@ -21,7 +13,11 @@
 - name: Add authorized key
   ansible.builtin.authorized_key:
     user: "{{ NORMAL_USER_NAME }}"
-    key: "{{ lookup('file', '~/.ssh/mitrans_ansible_key.pub')}}"
+    key: "{{ lookup('file', '{{ NORMAL_USER_PUB_KEY }}')}}"
+
+- name: update repository index
+  ansible.builtin.apt:
+    update_cache: yes
 
 - name: Install sudo
   ansible.builtin.apt:
@@ -35,3 +31,7 @@
     regexp: "{{ NORMAL_USER_NAME }} ALL"
     line: "{{ NORMAL_USER_NAME}} ALL=(ALL) ALL"
     state: present
+
+- name: upgrade the system
+  ansible.builtin.apt:
+    upgrade: yes
