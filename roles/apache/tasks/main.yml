@@ -5,6 +5,15 @@
       - apache2
     state: present
 
+- name: Apache Log Rotate Config
+  ansible.builtin.copy:
+    src: "apache2"
+    dest: /etc/logrotate.d/apache2
+    owner: root
+    group: root
+    mode: '0644'
+  notify: restart_apache
+
 - name: Forzamos la redireccion HTTPS
   ansible.builtin.template:
     src: 000-default.conf.j2
