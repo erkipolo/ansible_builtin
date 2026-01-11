@@ -1,0 +1,28 @@
+- name: Instalamos Monit
+  ansible.builtin.apt:
+    name:
+      - monit
+    state: present
+
+- name: Monitoreo de Recursos ???
+  ansible.builtin.lineinfile:
+    dest: /etc/monit/monitrc
+    regexp: "^set daemon "
+    line: 'set daemon 300'
+  notify: restart_monit
+
+- name: Monitoreo de Recursos ???
+  ansible.builtin.lineinfile:
+    dest: /etc/monit/monitrc
+    regexp: "^set logfile "
+    line: 'set logfile /var/log/monit.log'
+  notify: restart_monit
+
+- name: Monitoreo de Recursos ???
+  ansible.builtin.copy:
+    src: "local"
+    dest: /etc/monit/conf.d/local
+    owner: root
+    group: root
+    mode: '0644'
+  notify: restart_monit

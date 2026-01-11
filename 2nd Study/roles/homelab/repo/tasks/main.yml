@@ -1,0 +1,28 @@
+- name: Add debian main repositories for homelab
+  ansible.builtin.deb822_repository:
+    name: debian
+    types: deb
+    uris: http://192.168.56.1/debian
+    suites:
+      - trixie
+      - trixie-updates
+    components:
+      - main
+      - contrib
+    architectures: amd64
+    signed_by: /usr/share/keyrings/debian-archive-keyring.gpg
+    state: present
+
+- name: Add debian security repositories for homelab
+  ansible.builtin.deb822_repository:
+    name: security
+    types: deb
+    uris: http://192.168.56.1/debian-security
+    suites:
+      - trixie-security
+    components:
+      - main
+      - contrib
+    architectures: amd64
+    signed_by: /usr/share/keyrings/debian-archive-keyring.gpg
+    state: present

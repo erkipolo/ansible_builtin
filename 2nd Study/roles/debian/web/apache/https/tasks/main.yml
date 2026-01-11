@@ -1,0 +1,33 @@
+- name: Instalamos los certificados de ejemplo
+  ansible.builtin.apt:
+    name:
+      - ssl-cert
+    state: present
+
+- name: Habilitamos Modulos de Apache
+  ansible.builtin.file:
+    src: /etc/apache2/mods-available/{{ item }}
+    dest: /etc/apache2/mods-enabled/{{ item }}
+    state: link
+  loop:
+     - rewrite.load
+     - socache_shmcb.load
+     - ssl.load
+     - ssl.conf
+  notify: restart_apache
+
+- name: Forzamos la redireccion HTTPS
+  ansible.builtin.copy:
+    src: "000-default.conf"
+    dest: /etc/apache2/sites-available/000-default.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: restart_apache
+
+- name: Habilitamos el sitio por defecto HTTPS
+  ansible.builtin.file:
+    src: /etc/apache2/sites-available/default-ssl.conf
+    dest: /etc/apache2/sites-enabled/default-ssl.conf
+    state: link
+  notify: restart_apache

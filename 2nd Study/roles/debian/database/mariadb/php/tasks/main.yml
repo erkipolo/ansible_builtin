@@ -1,0 +1,7 @@
+---
+- name: Instalamos suporte de php para MariaDB
+  ansible.builtin.apt:
+    name:
+      - php
+      - php-mysql
+    state: present

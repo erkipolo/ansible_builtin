@@ -1,0 +1,35 @@
+---
+# Estructura Basica:
+#   a) Rutas Estaticas
+#   b) Sysctl basic
+#   c) Sysctl Forward
+#   d) Repositorio
+#   e) Actualizar
+#   f) FW General
+#   g) Servicio General
+#   h) Servicio Especifico
+#   i) FW Servicio
+
+# Configuracion especifica para HomeLab
+- name: Install and Config cts
+  tags: cts
+  hosts: cts
+  roles:
+    - debian/iptables/init
+    - homelab/iptables/ssh/hosts
+    - debian/iptables/policy/hosts
+    - debian/sysctl/basic
+    - debian/apt/date
+    - homelab/repo
+    - debian/upgrade/manual
+    - debian/editor/vim
+    - debian/notify/postfix
+    - debian/hips/fail2ban
+    - debian/upgrade/unattended
+    - debian/monitor/monit
+    - debian/web/apache/init
+    - debian/web/apache/https
+    - debian/web/apache/php
+    - debian/iptables/web
+    - debian/database/mariadb/init
+    - debian/database/mariadb/php

@@ -1,0 +1,2 @@
+Unattended-Upgrade::Mail "adminred@nc.mitrans.gob.cu";
+Unattended-Upgrade::MailReport "on-change";

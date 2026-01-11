@@ -1,0 +1,29 @@
+$ORIGIN dpvhab.cu.
+$TTL 86400
+@  IN  SOA  dpvhab.cu. root.dpvhab.cu. (
+   2020040291    ; Serial
+         3600    ; Refresh
+          900    ; Retry
+      1209600    ; Expire
+        86400 )  ; Negative Cache TTL
+;
+@     IN  NS  firewall-lan.dpvhab.cu.
+@     IN  MX  10 firewall-lan.dpvhab.cu.
+@     IN  A   172.32.16.20
+@     IN  TXT "v=spf1 a mx a:firewall-lan.dpvhab.cu mx:firewall-lan.dpvhab.cu ip4:172.32.16.20/32 -all"
+;
+firewall-lan  IN  A   172.32.16.20
+;
+ns      IN  CNAME firewall-lan
+mx      IN  CNAME firewall-lan
+web     IN  CNAME firewall-lan
+ha      IN  CNAME firewall-lan
+px      IN  CNAME firewall-lan
+ftp     IN  CNAME firewall-lan
+adm     IN  CNAME firewall-lan
+repo    IN  CNAME firewall-lan
+ntp     IN  CNAME firewall-lan
+nube    IN  CNAME firewall-lan
+;
+node01  IN  CNAME firewall-lan
+

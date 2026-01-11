@@ -1,0 +1,15 @@
+- name: ACCEPT INPUT NTP IPv4
+  ansible.builtin.iptables:
+    table: filter
+    chain: INPUT
+    chain_management: true
+    state: present
+    action: append
+    protocol: udp
+    destination_port: 123
+    source: 0.0.0.0/0
+    ctstate: NEW
+    jump: ACCEPT
+    comment: 'NTP'
+    ip_version: ipv4
+  notify: save_rules

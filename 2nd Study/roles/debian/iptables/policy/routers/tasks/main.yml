@@ -1,0 +1,32 @@
+- name: DEFAULT DROP INPUT POLICY
+  ansible.builtin.iptables:
+    table: filter
+    chain: INPUT
+    chain_management: true
+    state: present
+    action: append
+    policy: DROP
+    comment: 'DROP INCOMING'
+  notify: save_rules
+
+- name: DEFAULT ACCEPT FORWARD POLICY
+  ansible.builtin.iptables:
+    table: filter
+    chain: FORWARD
+    chain_management: true
+    state: present
+    action: append
+    policy: ACCEPT
+    comment: 'ACCEPT ROUTED'
+  notify: save_rules
+
+- name: DEFAULT ACCEPT OUTPUT POLICY
+  ansible.builtin.iptables:
+    table: filter
+    chain: OUTPUT
+    chain_management: true
+    state: present
+    action: append
+    policy: ACCEPT
+    comment: 'ACCEPT OUTGOING'
+  notify: save_rules

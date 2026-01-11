@@ -1,0 +1,12 @@
+- name: Instalamos Herramientas de Administracion
+  ansible.builtin.apt:
+    name:
+      - ansible
+      - sshpass
+      - git
+      - htop
+      - tmux
+      - ncdu
+      - rsync
+      - ripgrep
+    state: present

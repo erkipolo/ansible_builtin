@@ -1,0 +1,734 @@
+# REDIRECT DNS FROM Internacional TO Dmz
+
+- name: DNAT PREROUTING DNS IPv4
+  ansible.builtin.iptables:
+    table: nat
+    chain: PREROUTING
+    chain_management: true
+    state: present
+    action: append
+    protocol: udp
+    destination_port: 53
+    source: 0.0.0.0/0
+    destination: 190.6.78.50/32
+    to_destination: 192.168.40.10
+    ctstate: NEW
+    jump: DNAT
+    comment: 'DNS'
+    ip_version: ipv4
+  notify: save_rules
+
+# ACCEPT FORWARD DNS FROM Internacional TO Dmz
+
+- name: ACCEPT FORWARD DNS IPv4
+  ansible.builtin.iptables:
+    table: filter
+    chain: FORWARD
+    chain_management: true
+    state: present
+    action: append
+    protocol: udp
+    destination_port: 53
+    source: 0.0.0.0/0
+    destination: 192.168.40.10/32
+    ctstate: NEW
+    jump: ACCEPT
+    comment: 'DNS'
+    ip_version: ipv4
+  notify: save_rules
+
+# ACCEPT FORWARD SSH FROM Dmz TO Router
+
+- name: ACCEPT FORWARD LIMIT SSH IPv4
+  ansible.builtin.iptables:
+    table: filter
+    chain: FORWARD
+    chain_management: true
+    state: present
+    action: append
+    protocol: tcp
+    destination_port: 22
+    source: 192.168.40.22/32
+    destination: 190.6.78.49/32
+    ctstate: NEW
+    syn: match
+    limit: 2/second
+    limit_burst: 20
+    jump: ACCEPT
+    comment: 'SSH'
+    ip_version: ipv4
+  notify: save_rules
+
+- name: ACCEPT FORWARD LIMIT SSH IPv4
+  ansible.builtin.iptables:
+    table: filter
+    chain: FORWARD
+    chain_management: true
+    state: present
+    action: append
+    protocol: tcp
+    destination_port: 22
+    source: 192.168.40.29/32
+    destination: 190.6.78.49/32
+    ctstate: NEW
+    syn: match
+    limit: 2/second
+    limit_burst: 20
+    jump: ACCEPT
+    comment: 'SSH'
+    ip_version: ipv4
+  notify: save_rules
+
+# REDIRECT HTTP (REPO) FROM Router TO fw
+
+- name: DNAT PREROUTING HTTP (REPO) IPv4
+  ansible.builtin.iptables:
+    table: nat
+    chain: PREROUTING
+    chain_management: true
+    state: present
+    action: append
+    protocol: tcp
+    destination_port: 80
+    source: 190.6.78.49/32
+    destination: 190.6.78.52/32
+    to_destination: 192.168.40.24
+    ctstate: NEW
+    syn: match
+    jump: DNAT
+    comment: 'REPO'
+    ip_version: ipv4
+  notify: save_rules
+
+# ACCEPT FORWARD HTTP (REPO) FROM Router TO Dmz
+
+- name: ACCEPT FORWARD HTTP (REPO) IPv4
+  ansible.builtin.iptables:
+    table: filter
+    chain: FORWARD
+    chain_management: true
+    state: present
+    action: append
+    protocol: tcp
+    destination_port: 80
+    source: 190.6.78.49/32
+    destination: 192.168.40.24/32
+    ctstate: NEW
+    syn: match
+    jump: ACCEPT
+    comment: 'REPO'
+    ip_version: ipv4
+  notify: save_rules
+
+# ACCEPT FORWARD DNS FROM dmz TO Internacional
+
+- name: ACCEPT FORWARD DNS IPv4
+  ansible.builtin.iptables:
+    table: filter
+    chain: FORWARD
+    chain_management: true
+    state: present
+    action: append
+    protocol: udp
+    destination_port: 53
+    source: 192.168.40.10/32
+    destination: 0.0.0.0/0
+    ctstate: NEW
+    jump: ACCEPT
+    comment: 'DNS'
+    ip_version: ipv4
+  notify: save_rules
+
+# ACCEPT FORWARD PROXY FROM dmz TO Internacional
+
+- name: ACCEPT FORWARD PROXY IPv4
+  ansible.builtin.iptables:
+    table: filter
+    chain: FORWARD
+    chain_management: true
+    state: present
+    action: append
+    protocol: tcp
+    destination_ports: '21,70,80,210,280,443,488,591,777,1025:65535'
+    source: 192.168.40.18/32
+    destination: 0.0.0.0/0
+    ctstate: NEW
+    jump: ACCEPT
+    comment: 'PROXY'
+    ip_version: ipv4
+  notify: save_rules
+
+# MASQUERADE PING FROM Dmz TO Internacional
+
+- name: SNAT POSTROUTING PING IPv4
+  ansible.builtin.iptables:
+    table: nat
+    chain: POSTROUTING
+    chain_management: true
+    state: present
+    action: append
+    protocol: icmp
+    source: 0.0.0.0/0
+    destination: 0.0.0.0/0
+    to_source: 190.6.78.50
+    ctstate: NEW
+    jump: SNAT
+    comment: 'PING'
+    ip_version: ipv4
+  notify: save_rules
+
+# MASQUERADE SSH FROM Dmz TO Router
+
+- name: SNAT POSTROUTING SSH IPv4
+  ansible.builtin.iptables:
+    table: nat
+    chain: POSTROUTING
+    chain_management: true
+    state: present
+    action: append
+    protocol: tcp
+    destination_port: 22
+    source: 192.168.40.22/32
+    destination: 190.6.78.49/32
+    to_source: 190.6.78.53
+    ctstate: NEW
+    syn: match
+    jump: SNAT
+    comment: 'SSH'
+    ip_version: ipv4
+  notify: save_rules
+
+- name: SNAT POSTROUTING SSH IPv4
+  ansible.builtin.iptables:
+    table: nat
+    chain: POSTROUTING
+    chain_management: true
+    state: present
+    action: append
+    protocol: tcp
+    destination_port: 22
+    source: 192.168.40.29/32
+    destination: 190.6.78.49/32
+    to_source: 190.6.78.53
+    ctstate: NEW
+    syn: match
+    jump: SNAT
+    comment: 'SSH'
+    ip_version: ipv4
+  notify: save_rules
+
+# MASQUERADE DNS FROM Dmz TO Internacional
+
+- name: SNAT POSTROUTING DNS IPv4
+  ansible.builtin.iptables:
+    table: nat
+    chain: POSTROUTING
+    chain_management: true
+    state: present
+    action: append
+    protocol: udp
+    destination_port: 53
+    source: 192.168.40.10/32
+    destination: 0.0.0.0/0
+    to_source: 190.6.78.50
+    ctstate: NEW
+    jump: SNAT
+    comment: 'DNS'
+    ip_version: ipv4
+  notify: save_rules
+
+# MASQUERADE PROXY FROM Dmz TO Internacional
+
+- name: SNAT POSTROUTING PROXY IPv4
+  ansible.builtin.iptables:
+    table: nat
+    chain: POSTROUTING
+    chain_management: true
+    state: present
+    action: append
+    protocol: tcp
+    destination_ports: '21,70,80,210,280,443,488,591,777,1025:65535'
+    source: 192.168.40.18/32
+    destination: 0.0.0.0/0
+    to_source: 190.6.78.53
+    ctstate: NEW
+    syn: match
+    jump: SNAT
+    comment: 'PROXY'
+    ip_version: ipv4
+  notify: save_rules
+
+# ACCEPT FORWARD APT-MIRROR FROM dmz TO Internacional
+
+- name: ACCEPT FORWARD APT-MIRROR IPv4
+  ansible.builtin.iptables:
+    table: filter
+    chain: FORWARD
+    chain_management: true
+    state: present
+    action: append
+    protocol: tcp
+    destination_ports: '80,443'
+    source: 192.168.40.24/32
+    destination: 0.0.0.0/0
+    ctstate: NEW
+    jump: ACCEPT
+    comment: 'APT-MIRROR'
+    ip_version: ipv4
+  notify: save_rules
+
+# MASQUERADE APT-MIRROR FROM Dmz TO Internacional
+
+- name: SNAT POSTROUTING APT-MIRROR IPv4
+  ansible.builtin.iptables:
+    table: nat
+    chain: POSTROUTING
+    chain_management: true
+    state: present
+    action: append
+    protocol: tcp
+    destination_ports: '80,443'
+    source: 192.168.40.24/32
+    destination: 0.0.0.0/0
+    to_source: 190.6.78.53
+    ctstate: NEW
+    syn: match
+    jump: SNAT
+    comment: 'APT-MIRROR'
+    ip_version: ipv4
+  notify: save_rules
+
+# ACCEPT FORWARD HTTP(S) FROM Apn TO Internacional
+
+- name: ACCEPT FORWARD HTTP(S) IPv4
+  ansible.builtin.iptables:
+    table: filter
+    chain: FORWARD
+    chain_management: true
+    state: present
+    action: append
+    protocol: tcp
+    destination_ports: '80,443'
+    source: 172.32.20.0/24
+    destination: 0.0.0.0/0
+    ctstate: NEW
+    jump: ACCEPT
+    comment: 'HTTP(S)'
+    ip_version: ipv4
+  notify: save_rules
+
+# MASQUERADE HTTP(S) FROM Apn TO Internacional
+
+- name: SNAT POSTROUTING HTTP(S) IPv4
+  ansible.builtin.iptables:
+    table: nat
+    chain: POSTROUTING
+    chain_management: true
+    state: present
+    action: append
+    protocol: tcp
+    destination_ports: '80,443'
+    source: 172.32.20.0/24
+    destination: 0.0.0.0/0
+    to_source: 190.6.78.53
+    ctstate: NEW
+    syn: match
+    jump: SNAT
+    comment: 'HTTP(S)'
+    ip_version: ipv4
+  notify: save_rules
+
+# ACCEPT FORWARD FTP FROM dmz TO Internacional
+
+- name: ACCEPT FORWARD FTP IPv4
+  ansible.builtin.iptables:
+    table: filter
+    chain: FORWARD
+    chain_management: true
+    state: present
+    action: append
+    protocol: tcp
+    destination_ports: '80,443'
+    source: 192.168.40.20/32
+    destination: 0.0.0.0/0
+    ctstate: NEW
+    jump: ACCEPT
+    comment: 'FTP'
+    ip_version: ipv4
+  notify: save_rules
+
+# MASQUERADE FTP FROM Dmz TO internacional
+
+- name: SNAT POSTROUTING FTP IPv4
+  ansible.builtin.iptables:
+    table: nat
+    chain: POSTROUTING
+    chain_management: true
+    state: present
+    action: append
+    protocol: tcp
+    destination_ports: '80,443'
+    source: 192.168.40.20/32
+    destination: 0.0.0.0/0
+    to_source: 190.6.78.53
+    ctstate: NEW
+    syn: match
+    jump: SNAT
+    comment: 'FTP'
+    ip_version: ipv4
+  notify: save_rules
+
+# ACCEPT FORWARD NTP FROM Any TO Internacional
+
+- name: ACCEPT FORWARD NTP IPv4
+  ansible.builtin.iptables:
+    table: filter
+    chain: FORWARD
+    chain_management: true
+    state: present
+    action: append
+    protocol: udp
+    destination_port: 123
+    source: 0.0.0.0/0
+    destination: 0.0.0.0/0
+    ctstate: NEW
+    jump: ACCEPT
+    comment: 'NTP'
+    ip_version: ipv4
+  notify: save_rules
+
+# MASQUERADE NTP FROM Any TO Internacional
+
+- name: SNAT POSTROUTING NTP IPv4
+  ansible.builtin.iptables:
+    table: nat
+    chain: POSTROUTING
+    chain_management: true
+    state: present
+    action: append
+    protocol: udp
+    destination_port: 123
+    source: 0.0.0.0/0
+    destination: 0.0.0.0/0
+    to_source: 190.6.78.50
+    ctstate: NEW
+    jump: SNAT
+    comment: 'NTP'
+    ip_version: ipv4
+  notify: save_rules
+
+# ACCEPT FORWARD ADM FROM dmz TO Internacional
+
+- name: ACCEPT FORWARD ADM IPv4
+  ansible.builtin.iptables:
+    table: filter
+    chain: FORWARD
+    chain_management: true
+    state: present
+    action: append
+    protocol: tcp
+    destination_ports: '80,443'
+    source: 192.168.40.22/32
+    destination: 0.0.0.0/0
+    ctstate: NEW
+    jump: ACCEPT
+    comment: 'ADM'
+    ip_version: ipv4
+  notify: save_rules
+
+# MASQUERADE ADM FROM Dmz TO internacional
+
+- name: SNAT POSTROUTING ADM IPv4
+  ansible.builtin.iptables:
+    table: nat
+    chain: POSTROUTING
+    chain_management: true
+    state: present
+    action: append
+    protocol: tcp
+    destination_ports: '80,443'
+    source: 192.168.40.22/32
+    destination: 0.0.0.0/0
+    to_source: 190.6.78.53
+    ctstate: NEW
+    syn: match
+    jump: SNAT
+    comment: 'ADM'
+    ip_version: ipv4
+  notify: save_rules
+
+# ACCEPT FORWARD Mensajeria FROM Apn TO Internacional
+
+- name: ACCEPT FORWARD Mensajeria IPv4
+  ansible.builtin.iptables:
+    table: filter
+    chain: FORWARD
+    chain_management: true
+    state: present
+    action: append
+    protocol: tcp
+    destination_ports: '1756,3478,5222,5223,5224,5228'
+    source: 172.32.20.0/24
+    destination: 0.0.0.0/0
+    ctstate: NEW
+    jump: ACCEPT
+    comment: 'Mensajeria'
+    ip_version: ipv4
+  notify: save_rules
+
+# MASQUERADE Mensajeria FROM Apn TO Internacional
+
+- name: SNAT POSTROUTING Mensajeria IPv4
+  ansible.builtin.iptables:
+    table: nat
+    chain: POSTROUTING
+    chain_management: true
+    state: present
+    action: append
+    protocol: tcp
+    destination_ports: '1756,3478,5222,5223,5224,5228'
+    source: 172.32.20.0/24
+    destination: 0.0.0.0/0
+    to_source: 190.6.78.53
+    ctstate: NEW
+    jump: SNAT
+    comment: 'Mensajeria'
+    ip_version: ipv4
+  notify: save_rules
+
+# ACCEPT FORWARD Mensajeria FROM Apn TO Internacional
+
+- name: ACCEPT FORWARD Mensajeria IPv4
+  ansible.builtin.iptables:
+    table: filter
+    chain: FORWARD
+    chain_management: true
+    state: present
+    action: append
+    protocol: udp
+    destination_ports: '3478,5222,46979'
+    source: 172.32.20.0/24
+    destination: 0.0.0.0/0
+    ctstate: NEW
+    jump: ACCEPT
+    comment: 'Mensajeria'
+    ip_version: ipv4
+  notify: save_rules
+
+# MASQUERADE Mensajeria FROM Apn TO Internacional
+
+- name: SNAT POSTROUTING Mensajeria IPv4
+  ansible.builtin.iptables:
+    table: nat
+    chain: POSTROUTING
+    chain_management: true
+    state: present
+    action: append
+    protocol: udp
+    destination_ports: '3478,5222,46979'
+    source: 172.32.20.0/24
+    destination: 0.0.0.0/0
+    to_source: 190.6.78.53
+    ctstate: NEW
+    jump: SNAT
+    comment: 'Mensajeria'
+    ip_version: ipv4
+  notify: save_rules
+
+# ACCEPT FORWARD Jitsi Meet FROM Apn TO Internacional
+
+- name: ACCEPT FORWARD Jitsi Meet IPv4
+  ansible.builtin.iptables:
+    table: filter
+    chain: FORWARD
+    chain_management: true
+    state: present
+    action: append
+    protocol: udp
+    destination_ports: '10000:20000'
+    source: 172.32.20.0/24
+    destination: 0.0.0.0/0
+    ctstate: NEW
+    jump: ACCEPT
+    comment: 'Jitsi Meet'
+    ip_version: ipv4
+  notify: save_rules
+
+# MASQUERADE Jitsi Meet FROM Apn TO Internacional
+
+- name: SNAT POSTROUTING Jitsi Meet IPv4
+  ansible.builtin.iptables:
+    table: nat
+    chain: POSTROUTING
+    chain_management: true
+    state: present
+    action: append
+    protocol: udp
+    destination_ports: '10000:20000'
+    source: 172.32.20.0/24
+    destination: 0.0.0.0/0
+    to_source: 190.6.78.53
+    ctstate: NEW
+    jump: SNAT
+    comment: 'Jitsi Meet'
+    ip_version: ipv4
+  notify: save_rules
+
+# ACCEPT FORWARD WEB FROM dmz TO Internacional
+
+- name: ACCEPT FORWARD WEB IPv4
+  ansible.builtin.iptables:
+    table: filter
+    chain: FORWARD
+    chain_management: true
+    state: present
+    action: append
+    protocol: tcp
+    destination_ports: '80,443'
+    source: 192.168.40.14/32
+    destination: 0.0.0.0/0
+    ctstate: NEW
+    jump: ACCEPT
+    comment: 'WEB'
+    ip_version: ipv4
+  notify: save_rules
+
+# MASQUERADE WEB FROM Dmz TO internacional
+
+- name: SNAT POSTROUTING WEB IPv4
+  ansible.builtin.iptables:
+    table: nat
+    chain: POSTROUTING
+    chain_management: true
+    state: present
+    action: append
+    protocol: tcp
+    destination_ports: '80,443'
+    source: 192.168.40.14/32
+    destination: 0.0.0.0/0
+    to_source: 190.6.78.53
+    ctstate: NEW
+    syn: match
+    jump: SNAT
+    comment: 'WEB'
+    ip_version: ipv4
+  notify: save_rules
+
+# ACCEPT FORWARD NUBE FROM dmz TO Internacional
+
+- name: ACCEPT FORWARD NUBE IPv4
+  ansible.builtin.iptables:
+    table: filter
+    chain: FORWARD
+    chain_management: true
+    state: present
+    action: append
+    protocol: tcp
+    destination_ports: '80,443'
+    source: 192.168.40.28/32
+    destination: 0.0.0.0/0
+    ctstate: NEW
+    jump: ACCEPT
+    comment: 'NUBE'
+    ip_version: ipv4
+  notify: save_rules
+
+# MASQUERADE NUBE FROM Dmz TO internacional
+
+- name: SNAT POSTROUTING NUBE IPv4
+  ansible.builtin.iptables:
+    table: nat
+    chain: POSTROUTING
+    chain_management: true
+    state: present
+    action: append
+    protocol: tcp
+    destination_ports: '80,443'
+    source: 192.168.40.28/32
+    destination: 0.0.0.0/0
+    to_source: 190.6.78.53
+    ctstate: NEW
+    syn: match
+    jump: SNAT
+    comment: 'NUBE'
+    ip_version: ipv4
+  notify: save_rules
+
+# REDIRECT SMTP FROM Internacional TO Dmz
+
+- name: DNAT PREROUTING SMTP IPv4
+  ansible.builtin.iptables:
+    table: nat
+    chain: PREROUTING
+    chain_management: true
+    state: present
+    action: append
+    protocol: tcp
+    destination_port: 25
+    source: 0.0.0.0/0
+    destination: 190.6.78.51/32
+    to_destination: 192.168.40.12
+    ctstate: NEW
+    jump: DNAT
+    comment: 'SMTP'
+    ip_version: ipv4
+  notify: save_rules
+
+# ACCEPT FORWARD SMTP FROM Internacional TO Dmz
+
+- name: ACCEPT FORWARD SMTP IPv4
+  ansible.builtin.iptables:
+    table: filter
+    chain: FORWARD
+    chain_management: true
+    state: present
+    action: append
+    protocol: tcp
+    destination_port: 25
+    source: 0.0.0.0/0
+    destination: 192.168.40.12/32
+    ctstate: NEW
+    jump: ACCEPT
+    comment: 'SMTP'
+    ip_version: ipv4
+  notify: save_rules
+
+# ACCEPT FORWARD SMTP FROM dmz TO Internacional
+
+- name: ACCEPT FORWARD SMTP IPv4
+  ansible.builtin.iptables:
+    table: filter
+    chain: FORWARD
+    chain_management: true
+    state: present
+    action: append
+    protocol: tcp
+    destination_port: 25
+    source: 192.168.40.12/32
+    destination: 0.0.0.0/0
+    ctstate: NEW
+    jump: ACCEPT
+    comment: 'SMTP'
+    ip_version: ipv4
+  notify: save_rules
+
+# MASQUERADE SMTP FROM Dmz TO Internacional
+
+- name: SNAT POSTROUTING SMTP IPv4
+  ansible.builtin.iptables:
+    table: nat
+    chain: POSTROUTING
+    chain_management: true
+    state: present
+    action: append
+    protocol: tcp
+    destination_port: 25
+    source: 192.168.40.12/32
+    destination: 0.0.0.0/0
+    to_source: 190.6.78.51
+    ctstate: NEW
+    jump: SNAT
+    comment: 'SMTP'
+    ip_version: ipv4
+  notify: save_rules
+

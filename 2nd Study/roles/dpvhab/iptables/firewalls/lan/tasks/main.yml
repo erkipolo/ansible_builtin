@@ -1,0 +1,118 @@
+
+# ACCEPT FORWARD SMTP FROM dmz TO Lan
+
+- name: ACCEPT FORWARD SMTP IPv4
+  ansible.builtin.iptables:
+    table: filter
+    chain: FORWARD
+    chain_management: true
+    state: present
+    action: append
+    protocol: tcp
+    destination_port: 25
+    source: 192.168.40.12/32
+    destination: 0.0.0.0/0
+    ctstate: NEW
+    jump: ACCEPT
+    comment: 'SMTP'
+    ip_version: ipv4
+  notify: save_rules
+
+# MASQUERADE SMTP FROM Dmz TO Lan
+
+- name: SNAT POSTROUTING SMTP IPv4
+  ansible.builtin.iptables:
+    table: nat
+    chain: POSTROUTING
+    chain_management: true
+    state: present
+    action: append
+    protocol: tcp
+    destination_port: 25
+    source: 192.168.40.12/32
+    destination: 0.0.0.0/0
+    to_source: 10.16.50.20
+    ctstate: NEW
+    jump: SNAT
+    comment: 'SMTP'
+    ip_version: ipv4
+  notify: save_rules
+
+# REDIRECT SMTP FROM Lan TO Dmz
+
+- name: DNAT PREROUTING SMTP IPv4
+  ansible.builtin.iptables:
+    table: nat
+    chain: PREROUTING
+    chain_management: true
+    state: present
+    action: append
+    protocol: tcp
+    destination_port: 25
+    source: 0.0.0.0/0
+    destination: 10.16.50.20/32
+    to_destination: 192.168.40.12
+    ctstate: NEW
+    jump: DNAT
+    comment: 'SMTP'
+    ip_version: ipv4
+  notify: save_rules
+
+# ACCEPT FORWARD SMTP FROM Lan TO Dmz
+
+- name: ACCEPT FORWARD SMTP IPv4
+  ansible.builtin.iptables:
+    table: filter
+    chain: FORWARD
+    chain_management: true
+    state: present
+    action: append
+    protocol: tcp
+    destination_port: 25
+    source: 0.0.0.0/0
+    destination: 192.168.40.12/32
+    ctstate: NEW
+    jump: ACCEPT
+    comment: 'SMTP'
+    ip_version: ipv4
+  notify: save_rules
+
+# REDIRECT PROXY FROM Lan TO Dmz
+
+- name: DNAT PREROUTING PROXY IPv4
+  ansible.builtin.iptables:
+    table: nat
+    chain: PREROUTING
+    chain_management: true
+    state: present
+    action: append
+    protocol: tcp
+    destination_port: 3128
+    source: 0.0.0.0/0
+    destination: 10.16.50.20/32
+    to_destination: 192.168.40.18
+    ctstate: NEW
+    jump: DNAT
+    comment: 'PROXY'
+    ip_version: ipv4
+  notify: save_rules
+
+# ACCEPT FORWARD PROXY FROM Lan TO Dmz
+
+- name: ACCEPT FORWARD PROXY IPv4
+  ansible.builtin.iptables:
+    table: filter
+    chain: FORWARD
+    chain_management: true
+    state: present
+    action: append
+    protocol: tcp
+    destination_port: 3128
+    source: 0.0.0.0/0
+    destination: 192.168.40.18/32
+    ctstate: NEW
+    jump: ACCEPT
+    comment: 'PROXY'
+    ip_version: ipv4
+  notify: save_rules
+

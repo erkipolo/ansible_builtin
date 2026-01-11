@@ -1,0 +1,73 @@
+- name: REDIRECT DEFAULT TO WEB
+  ansible.builtin.copy:
+    src: "default-ssl.conf"
+    dest: /etc/apache2/sites-available/default-ssl.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: restart_apache
+
+- name: REDIRECT FTP
+  ansible.builtin.copy:
+    src: "ftp.conf"
+    dest: /etc/apache2/sites-available/ftp.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: restart_apache
+
+- name: Habilitamos el sitio para FTP
+  ansible.builtin.file:
+    src: /etc/apache2/sites-available/ftp.conf
+    dest: /etc/apache2/sites-enabled/ftp.conf
+    state: link
+  notify: restart_apache
+
+- name: REDIRECT REPO
+  ansible.builtin.copy:
+    src: "repo.conf"
+    dest: /etc/apache2/sites-available/repo.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: restart_apache
+
+- name: Habilitamos el sitio para REPO
+  ansible.builtin.file:
+    src: /etc/apache2/sites-available/repo.conf
+    dest: /etc/apache2/sites-enabled/repo.conf
+    state: link
+  notify: restart_apache
+
+- name: REDIRECT WEB
+  ansible.builtin.copy:
+    src: "web.conf"
+    dest: /etc/apache2/sites-available/web.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: restart_apache
+
+- name: Habilitamos el sitio para WEB
+  ansible.builtin.file:
+    src: /etc/apache2/sites-available/web.conf
+    dest: /etc/apache2/sites-enabled/web.conf
+    state: link
+  notify: restart_apache
+
+- name: REDIRECT NUBE
+  ansible.builtin.copy:
+    src: "nube.conf"
+    dest: /etc/apache2/sites-available/nube.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: restart_apache
+
+- name: Habilitamos el sitio para NUBE
+  ansible.builtin.file:
+    src: /etc/apache2/sites-available/nube.conf
+    dest: /etc/apache2/sites-enabled/nube.conf
+    state: link
+  notify: restart_apache
+
