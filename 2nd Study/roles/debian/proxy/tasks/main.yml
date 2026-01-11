@@ -1,0 +1,22 @@
+- name: Install Squid
+  ansible.builtin.apt:
+    name: squid
+    state: present
+
+- name: Proxy Main Config with PVE Access
+  ansible.builtin.copy:
+    src: "squid.conf"
+    dest: /etc/squid/squid.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: restart_squid
+
+- name: Proxy Log Rotate Config
+  ansible.builtin.copy:
+    src: "squid"
+    dest: /etc/logrotate.d/squid
+    owner: root
+    group: root
+    mode: '0644'
+  notify: restart_squid

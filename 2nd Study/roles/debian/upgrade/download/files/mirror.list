@@ -1,0 +1,31 @@
+############# config ##################
+#
+# set base_path    /var/spool/apt-mirror
+#
+# set mirror_path  $base_path/mirror
+# set skel_path    $base_path/skel
+# set var_path     $base_path/var
+# set cleanscript $var_path/clean.sh
+# set defaultarch  <running host architecture>
+# set postmirror_script $var_path/postmirror.sh
+# set run_postmirror 0
+set nthreads     20
+set _tilde 0
+#
+############# end config ##############
+deb-amd64 http://deb.debian.org/debian trixie contrib main non-free non-free-firmware
+deb-amd64 http://deb.debian.org/debian trixie-updates contrib main non-free non-free-firmware
+deb-amd64 http://deb.debian.org/debian trixie-backports contrib main non-free non-free-firmware
+deb-amd64 http://security.debian.org/debian-security/ trixie-security contrib main non-free non-free-firmware
+deb-amd64 http://www.deb-multimedia.org trixie main non-free
+deb-amd64 http://download.proxmox.com/debian/pve trixie pve-no-subscription
+deb-amd64 http://download.proxmox.com/debian/pbs trixie pbs-no-subscription
+deb-amd64 http://download.proxmox.com/debian/ceph-squid trixie no-subscription
+
+clean http://deb.debian.org/debian
+clean http://security.debian.org/debian-security/
+clean http://www.deb-multimedia.org
+clean http://download.proxmox.com/debian/pve
+clean http://download.proxmox.com/debian/pbs
+clean http://download.proxmox.com/debian/ceph-squid
+

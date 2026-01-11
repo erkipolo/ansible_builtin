@@ -1,0 +1,50 @@
+- name: Instalar descargador de copia del repositorio
+  ansible.builtin.apt:
+    name:
+      - apt-mirror
+    state: present
+
+- name: Copiamos una configuracion personalizada
+  ansible.builtin.copy:
+    src: "mirror.list"
+    dest: /etc/apt/mirror.list
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Descargamos a las 0400 hrs
+  ansible.builtin.copy:
+    src: "apt-mirror"
+    dest: /etc/cron.d/apt-mirror
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Create directories for debian and proxmox
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: apt-mirror
+    group: apt-mirror
+    mode: '0755'
+  loop:
+    - /var/spool/apt-mirror/mirror/deb.debian.org/debian
+    - /var/spool/apt-mirror/mirror/security.debian.org/debian-security
+    - /var/spool/apt-mirror/mirror/download.proxmox.com/debian/pve
+    - /var/spool/apt-mirror/mirror/download.proxmox.com/debian/pbs
+    - /var/spool/apt-mirror/mirror/download.proxmox.com/debian/ceph-squid
+
+- name: Create a symbolic link for debian and proxmox
+  ansible.builtin.file:
+    src:  '{{ item.src }}'
+    dest: '{{ item.dest }}'
+    owner: apt-mirror
+    group: apt-mirror
+    state: link
+  loop:
+    - { src: /var/spool/apt-mirror/mirror/deb.debian.org/debian, dest: /var/www/html/debian }
+    - { src: /var/spool/apt-mirror/mirror/security.debian.org/debian-security, dest: /var/www/html/debian-security }
+    - { src: /var/spool/apt-mirror/mirror/download.proxmox.com/debian/pve, dest: /var/www/html/debian/pve }
+    - { src: /var/spool/apt-mirror/mirror/download.proxmox.com/debian/pbs, dest: /var/www/html/debian/pbs }
+    - { src: /var/spool/apt-mirror/mirror/download.proxmox.com/debian/ceph-squid, dest: /var/www/html/debian/ceph-squid }
+

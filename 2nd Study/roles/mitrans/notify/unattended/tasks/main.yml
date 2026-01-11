@@ -1,0 +1,8 @@
+- name: Copiamos una configuracion personalizada 3
+  ansible.builtin.copy:
+    src: "53unattended-notification-local"
+    dest: /etc/apt/apt.conf.d/53unattended-notification-local
+    owner: root
+    group: root
+    mode: '0644'
+  notify: restart_unattended

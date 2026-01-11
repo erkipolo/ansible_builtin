@@ -1,0 +1,107 @@
+---
+- name: install soporte de php-fpm para apache
+  ansible.builtin.apt:
+    name:
+      - php
+      - php-fpm
+      - libapache2-mod-php
+    state: present
+  notify: restart_apache
+
+- name: Habilitamos Modulos de Apache
+  ansible.builtin.file:
+    src: /etc/apache2/mods-available/{{ item }}
+    dest: /etc/apache2/mods-enabled/{{ item }}
+    state: link
+  loop:
+     - proxy.load
+     - proxy.conf
+     - setenvif.load
+     - setenvif.conf
+     - proxy_fcgi.load
+  notify: restart_apache
+
+- name: Habilitamos la config de PHP 8.4-fpm para Apache
+  ansible.builtin.file:
+    src: /etc/apache2/conf-available/php8.4-fpm.conf
+    dest: /etc/apache2/conf-enabled/php8.4-fpm.conf
+    state: link
+  notify: restart_apache
+
+- name: Modified Memory Limit for PHP
+  ansible.builtin.lineinfile:
+    dest: /etc/php/8.4/apache2/php.ini
+    regexp: "^memory_limit ="
+    line: 'memory_limit = 512M'
+  notify: restart_apache
+
+- name: Modified Upload Max for PHP
+  ansible.builtin.lineinfile:
+    dest: /etc/php/8.4/apache2/php.ini
+    regexp: "^upload_max_filesize ="
+    line: 'upload_max_filesize = 200M'
+  notify: restart_apache
+
+- name: Modified Max Exec Time for PHP
+  ansible.builtin.lineinfile:
+    dest: /etc/php/8.4/apache2/php.ini
+    regexp: "^max_execution_time ="
+    line: 'max_execution_time = 360'
+  notify: restart_apache
+
+- name: Modified Post Max Size for PHP
+  ansible.builtin.lineinfile:
+    dest: /etc/php/8.4/apache2/php.ini
+    regexp: "^post_max_size ="
+    line: 'post_max_size = 200M'
+  notify: restart_apache
+
+- name: Modified Time Zone for PHP
+  ansible.builtin.lineinfile:
+    dest: /etc/php/8.4/apache2/php.ini
+    regexp: "^;date.timezone ="
+    line: 'date.timezone = America/Havana'
+  notify: restart_apache
+
+- name: Modified OPCache Enable for PHP
+  ansible.builtin.lineinfile:
+    dest: /etc/php/8.4/apache2/php.ini
+    regexp: "^;opcache.enable="
+    line: 'opcache.enable=1'
+  notify: restart_apache
+
+- name: Modified OPCache Memory for PHP
+  ansible.builtin.lineinfile:
+    dest: /etc/php/8.4/apache2/php.ini
+    regexp: "^;opcache.interned_strings_buffer="
+    line: 'opcache.interned_strings_buffer=16'
+  notify: restart_apache
+
+- name: Modified OPCache Acceleration Files for PHP
+  ansible.builtin.lineinfile:
+    dest: /etc/php/8.4/apache2/php.ini
+    regexp: "^;opcache.max_accelerated_files="
+    line: 'opcache.max_accelerated_files=10000'
+  notify: restart_apache
+
+- name: Modified OPCache Memory Consumption for PHP
+  ansible.builtin.lineinfile:
+    dest: /etc/php/8.4/apache2/php.ini
+    regexp: "^;opcache.memory_consumption="
+    line: 'opcache.memory_consumption=128'
+  notify: restart_apache
+
+- name: Modified OPCache Revalidate Frequency for PHP
+  ansible.builtin.lineinfile:
+    dest: /etc/php/8.4/apache2/php.ini
+    regexp: "^;opcache.revalidate_freq="
+    line: 'opcache.revalidate_freq=1'
+  notify: restart_apache
+
+- name: Modified OPCache Comments for PHP
+  ansible.builtin.lineinfile:
+    dest: /etc/php/8.4/apache2/php.ini
+    regexp: "^;opcache.save_comments="
+    line: 'opcache.save_comments=1'
+  notify: restart_apache
+

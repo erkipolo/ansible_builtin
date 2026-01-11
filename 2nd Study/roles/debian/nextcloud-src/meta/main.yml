@@ -1,0 +1,8 @@
+---
+dependencies:
+  - role: debian/web/apache/init
+  - role: debian/web/apache/https
+  - role: debian/web/apache/php
+  - role: debian/database/mariadb/init
+  - role: debian/database/mariadb/php
+

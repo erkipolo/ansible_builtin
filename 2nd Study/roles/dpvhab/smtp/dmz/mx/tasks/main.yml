@@ -1,0 +1,340 @@
+- name: Instalamos los certificados de ejemplo
+  ansible.builtin.apt:
+    name:
+      - ssl-cert
+    state: present
+
+- name: Instalando Postfix
+  ansible.builtin.apt:
+    name:
+      - postfix
+    state: present
+
+- name: Configurar el dominio del servidor de correo
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^mydomain ="
+    line: 'mydomain = dpvhab.cu'
+  notify: restart_postfix
+
+- name: Configurar el apartado "From" del correo electronico
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^myorigin ="
+    line: 'myorigin = $mydomain'
+  notify: restart_postfix
+
+- name: Configurar el nombre del servidor de correo
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^myhostname ="
+    line: 'myhostname = mx.$mydomain'
+  notify: restart_postfix
+
+- name: Configurar las interfaces de escucha
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^inet_interfaces ="
+    line: 'inet_interfaces = all'
+  notify: restart_postfix
+
+- name: Configurar los protocolos de escucha
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^inet_protocols ="
+    line: 'inet_protocols = all'
+  notify: restart_postfix
+
+- name: Configurar los dominios de destino aceptados
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^mydestination ="
+    line: 'mydestination ='
+  notify: restart_postfix
+
+- name: Configurar los servidores aceptados
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^mynetworks ="
+    line: 'mynetworks = 192.168.40.0/24'
+  notify: restart_postfix
+
+- name: Configurar servidor de reenvio
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^relayhost ="
+    line: 'relayhost ='
+  notify: restart_postfix
+
+- name: Configurar los dominios permitidos de salida
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^relay_domains ="
+    line: 'relay_domains = $mydomain'
+  notify: restart_postfix
+
+- name: Configurar email ???
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtp_tls_mandatory_protocols ="
+    line: 'smtp_tls_mandatory_protocols = !SSLv2, !SSLv3'
+  notify: restart_postfix
+
+- name: Configurar email ???
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtp_use_tls ="
+    line: 'smtp_use_tls = yes'
+  notify: restart_postfix
+
+- name: Configurar email ???
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtp_tls_security_level ="
+    line: 'smtp_tls_security_level = encrypt'
+  notify: restart_postfix
+
+- name: Configurar email ???
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtp_tls_session_cache_database ="
+    line: 'smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache'
+  notify: restart_postfix
+
+- name: Configurar email ???
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtp_tls_note_starttls_offer ="
+    line: 'smtp_tls_note_starttls_offer = yes'
+  notify: restart_postfix
+
+- name: Configurar email ???
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtp_helo_timeout ="
+    line: 'smtp_helo_timeout = 60s'
+  notify: restart_postfix
+
+- name: Configurar email ???
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtp_rset_timeout ="
+    line: 'smtp_rset_timeout = 20s'
+  notify: restart_postfix
+
+- name: Configurar email ???
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtp_rcpt_timeout ="
+    line: 'smtp_rcpt_timeout = 240s'
+  notify: restart_postfix
+
+- name: Configurar email ???
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtp_quit_timeout ="
+    line: 'smtp_quit_timeout = 240s'
+  notify: restart_postfix
+
+- name: Configurar email ???
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtp_connect_timeout ="
+    line: 'smtp_connect_timeout = 30'
+  notify: restart_postfix
+
+- name: Configurar email ???
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_tls_mandatory_protocols ="
+    line: 'smtpd_tls_mandatory_protocols = !SSLv2, !SSLv3'
+  notify: restart_postfix
+
+- name: Configurar email ???
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_use_tls ="
+    line: 'smtpd_use_tls = yes'
+  notify: restart_postfix
+
+- name: Configurar email ???
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_tls_security_level ="
+    line: 'smtpd_tls_security_level = may'
+  notify: restart_postfix
+
+- name: Configurar email ???
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_tls_session_cache_database ="
+    line: 'smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache'
+  notify: restart_postfix
+
+- name: Configurar email ???
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_tls_received_header ="
+    line: 'smtpd_tls_received_header = yes'
+  notify: restart_postfix
+
+- name: Configurar email ???
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_tls_session_cache_timeout ="
+    line: 'smtpd_tls_session_cache_timeout = 3600s'
+  notify: restart_postfix
+
+- name: Configurar email ???
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_tls_protocols ="
+    line: 'smtpd_tls_protocols = !SSLv2, !SSLv3'
+  notify: restart_postfix
+
+- name: Configurar email ???
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_helo_required ="
+    line: 'smtpd_helo_required = yes'
+  notify: restart_postfix
+
+- name: Configurar email ???
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_etrn_restrictions ="
+    line: 'smtpd_etrn_restrictions = reject'
+  notify: restart_postfix
+
+- name: Configurar email ???
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_reject_unlisted_sender ="
+    line: 'smtpd_reject_unlisted_sender = yes'
+  notify: restart_postfix
+
+- name: Configurar email ???
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_reject_unlisted_recipient ="
+    line: 'smtpd_reject_unlisted_recipient = yes'
+  notify: restart_postfix
+
+- name: Configurar email ???
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_forbidden_commands ="
+    line: 'smtpd_forbidden_commands = CONNECT, EXPN, GET, PASS, POST, USER'
+  notify: restart_postfix
+
+- name: Configurar email ???
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_delay_reject ="
+    line: 'smtpd_delay_reject = yes'
+  notify: restart_postfix
+
+- name: Configurar email ???
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_junk_command_limit ="
+    line: 'smtpd_junk_command_limit = 2'
+  notify: restart_postfix
+
+- name: Configurar email ???
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_error_sleep_time ="
+    line: 'smtpd_error_sleep_time = 1s'
+  notify: restart_postfix
+
+- name: Configurar email ???
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_soft_error_limit ="
+    line: 'smtpd_soft_error_limit = 10'
+  notify: restart_postfix
+
+- name: Configurar email ???
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_hard_error_limit ="
+    line: 'smtpd_hard_error_limit = 20'
+  notify: restart_postfix
+
+- name: Configurar email ???
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_recipient_limit ="
+    line: 'smtpd_recipient_limit = 15'
+  notify: restart_postfix
+
+- name: Configurar email ???
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_client_connection_count_limit ="
+    line: 'smtpd_client_connection_count_limit = 3'
+  notify: restart_postfix
+
+- name: Configurar email ???
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^strict_rfc821_envelopes ="
+    line: 'strict_rfc821_envelopes = yes'
+  notify: restart_postfix
+
+- name: Configurar email ???
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_reject_unlisted_recipient ="
+    line: 'smtpd_reject_unlisted_recipient = yes'
+  notify: restart_postfix
+
+- name: Configurar email ???
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^disable_vrfy_command ="
+    line: 'disable_vrfy_command = yes'
+  notify: restart_postfix
+
+- name: Configurar email ???
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^message_size_limit ="
+    line: 'message_size_limit = 8388594'
+  notify: restart_postfix
+
+- name: Configurar email ???
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_helo_restrictions ="
+    line: 'smtpd_helo_restrictions = permit_mynetworks reject_invalid_helo_hostname reject_non_fqdn_helo_hostname reject_unknown_helo_hostname reject_invalid_hostname'
+  notify: restart_postfix
+
+- name: Configurar email ???
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_data_restrictions ="
+    line: 'smtpd_data_restrictions = permit_mynetworks reject_unauth_pipelining reject_multi_recipient_bounce'
+  notify: restart_postfix
+
+- name: Configurar email ???
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_client_restrictions ="
+    line: 'smtpd_client_restrictions = permit_mynetworks reject_rbl_client dsn.rfc-ignorant.org reject_rbl_client sbl-xbl.spamhaus.org reject_rbl_client bl.spamcop.net reject_rbl_client cbl.abuseat.org reject_rbl_client ix.dnsbl.manitu.net reject_rbl_client combined.rbl.msrbl.net reject_rbl_client rabl.nuclearelephant.com'
+  notify: restart_postfix
+
+- name: Configurar email ???
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_sender_restrictions ="
+    line: 'smtpd_sender_restrictions = permit_mynetworks reject_unknown_sender_domain reject_unknown_recipient_domain reject_unknown_address reject_unknown_client'
+  notify: restart_postfix
+
+- name: Configurar email ???
+  ansible.builtin.lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "^smtpd_recipient_restrictions ="
+    line: 'smtpd_recipient_restrictions = permit_mynetworks reject_unauth_destination reject_non_fqdn_recipient reject_non_fqdn_sender reject_non_fqdn_hostname reject_invalid_hostname reject_unknown_helo_hostname reject_unknown_sender_domain reject_unknown_recipient_domain reject_rbl_client zen.spamhaus.org reject_rhsbl_reverse_client dbl.spamhaus.org reject_rhsbl_helo dbl.spamhaus.org reject_rhsbl_sender dbl.spamhaus.org reject_rbl_client dsn.rfc-ignorant.org reject_rbl_client sbl-xbl.spamhaus.org reject_rbl_client bl.spamcop.net reject_rbl_client cbl.abuseat.org reject_rbl_client ix.dnsbl.manitu.net reject_rbl_client combined.rbl.msrbl.net reject_rbl_client rabl.nuclearelephant.com'
+  notify: restart_postfix

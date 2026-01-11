@@ -1,0 +1,127 @@
+---
+- name: install PHP nextcloud dependencies
+  ansible.builtin.apt:
+    name:
+      - imagemagick-7.q16
+      - php
+      - php-apcu
+      - php-bcmath
+      - php-cli
+      - php-common
+      - php-curl
+      - php-redis
+      - php-gd
+      - php-gmp
+      - php-imagick
+      - php-intl
+      - php-mbstring
+      - php-zip
+      - php-xml
+      - unzip
+    state: present
+#
+#   Estamos usando /var/www/html/
+#
+#- name: Create directory for site
+#  ansible.builtin.file:
+#    path: /var/www/mydomain.com
+#    state: directory
+#    owner: www-data
+#    group: www-data
+#    mode: '0755'
+
+- name: Creando la base de datos para nextcloud
+  ansible.builtin.mysql_db:
+    name: "nextcloud"
+    state: present
+
+- name: Creando el usuario de nextcloud para la base de datos
+  ansible.builtin.mysql_user:
+    name: "nextcloud"
+    password: 'nextcloud'
+    priv: "nextcloud.*:ALL"
+    host: 'localhost'
+    state: present
+
+- name: Chequea si nextcloud esta descargado o no
+  ansible.builtin.stat:
+    path: /var/www/html/config/config.php
+  register: file_check
+
+- name: descargamos la ultima version (si no esta descargado)
+  ansible.builtin.get_url:
+    url: "https://download.nextcloud.com/server/releases/latest.zip"
+    dest: /tmp/
+  when: file_check.stat.exists == false
+
+- name: si esta descargado, extraemos el comprimido de nextcloud
+  ansible.builtin.unarchive:
+    src: /tmp/latest.zip
+    dest: /tmp/
+    remote_src: yes
+  when: file_check.stat.exists == false
+
+- name: si esta descargado, copiamos los archivos extraidos a la carpeta de publicacion
+  ansible.builtin.copy:
+    src: /tmp/nextcloud/
+    dest: /var/www/html/
+    remote_src: true
+    owner: www-data
+    group: www-data
+  when: file_check.stat.exists == false
+
+- name: Borramos los archivos y carpetas no utilizados
+  ansible.builtin.file:
+      path: "{{ item }}"
+      state: absent
+  loop:
+     - /tmp/latest.zip
+     - /tmp/nextcloud
+     - /var/www/html/index.html
+     - /var/www/html/index.lighttpd.html
+     - /var/www/html/index.nginx-debian.html
+
+#- name: Habilitamos el modulo de dir de PHP para Apache
+#  ansible.builtin.apache2_module:
+#    name:
+#      - dir
+#      - env
+#      - headers
+#      - mime
+#      - rewrite
+#      - ssl
+#    state: present
+#  notify: restart_apache
+
+- name: Habilitamos Modulos de Apache específicos para nextcloud
+  ansible.builtin.file:
+    src: /etc/apache2/mods-available/{{ item }}
+    dest: /etc/apache2/mods-enabled/{{ item }}
+    state: link
+  loop:
+     - dir.load
+     - dir.conf
+     - env.load
+     - headers.load
+     - mime.load
+     - mime.conf
+     - rewrite.load
+     - socache_shmcb.load
+     - ssl.load
+     - ssl.conf
+  notify: restart_apache
+
+- name: Modified APCU  for PHP
+  ansible.builtin.lineinfile:
+    dest: /etc/php/8.4/mods-available/apcu.ini
+    regexp: "^apc.enable_cli="
+    line: 'apc.enable_cli=1'
+  notify: restart_apache
+
+#- name: Give exec permissions to occ command
+#  ansible.builtin.file:
+#    path: /var/www/html/occ
+#    owner: www-data
+#    group: www-data
+#    mode: '0755'
+

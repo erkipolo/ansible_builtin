@@ -1,0 +1,5 @@
+- name: Instalamos VIM-NOX
+  ansible.builtin.apt:
+    name:
+      - vim-nox
+    state: present
